@@ -4,7 +4,7 @@ A comprehensive Flutter application demonstrating the full capabilities of the T
 
 > 📚 **Official Documentation**: [AppTrove Flutter SDK Documentation](https://developers.apptrove.com/docs/flutter-sdk/intro)
 
-<img src="Image/trackierlogo.png" alt="Trackier Logo" width="200" height="100">
+<img src="Image/trackierlogo.png" alt="Trackier Logo" width="400" height="650">
 
 
 ##  Features Overview
@@ -130,7 +130,7 @@ The main navigation hub featuring:
 - Clean, intuitive interface
 - Branded with Trackier logo
 
-<img src="Image/Screenshots/homescreen.png" alt="Home Screen" width="300" height="200">
+<img src="Image/Screenshots/homescreen.png" alt="Home Screen" width="400" height="650">
 
 ### 🎯 Built-in Events Screen (`BuiltInEventsScreen`)
 **Location**: `lib/Screens/BuildinEventScreen.dart`
@@ -160,7 +160,7 @@ Demonstrates tracking of predefined events:
 4. Add custom parameters (optional)
 5. Tap "Track Event" to send the event
 
-<img src="Image/Screenshots/buildinevent.png" alt="Built-in Events" width="300" height="200">
+<img src="Image/Screenshots/buildinevent.png" alt="Built-in Events" width="400" height="650">
 
 ### 🎨 Custom Events Screen (`CustomsEventsScreen`)
 **Location**: `lib/Screens/CustomEventsScreen.dart`
@@ -180,7 +180,7 @@ For tracking custom events with your own event IDs:
 3. Add custom parameters
 4. Track the event
 
-<img src="Image/Screenshots/customevent.png" alt="Custom Events" width="300" height="200">
+<img src="Image/Screenshots/customevent.png" alt="Custom Events" width="400" height="650">
 
 ### 🔗 Deep Link Screen (`DeepLinkingScreen`)
 **Location**: `lib/Screens/DeepLinkScreen.dart`
@@ -202,7 +202,7 @@ Handles deep link processing and navigation:
 3. View extracted parameters
 4. Navigate to appropriate screen
 
-<img src="Image/Screenshots/deeplinkpage.png" alt="Deep Link Page" width="300" height="200">
+<img src="Image/Screenshots/deeplinkpage.png" alt="Deep Link Page" width="400" height="650">
 
 ### 🎂 Cake Screen (`CakeScreen`)
 **Location**: `lib/Screens/CakeScreen.dart`
@@ -221,7 +221,7 @@ Product detail screen demonstrating deep link navigation:
 - Chocolate Chip Cupcake
 - Vanilla Cupcake
 
-<img src="Image/Screenshots/deeplinkvalauepage.png" alt="Deep Link Value Page" width="300" height="200">
+<img src="Image/Screenshots/deeplinkvalauepage.png" alt="Deep Link Value Page" width="400" height="650">
 
 ### 🔄 Dynamic Link Screen (`DynamicLinkScreen`)
 **Location**: `lib/Screens/DynamicLinkScreen.dart`
@@ -256,9 +256,9 @@ Create and resolve dynamic links:
 2. Tap "Resolve Deep Link"
 3. View the resolved URL with parameters
 
-<img src="Image/Screenshots/dynamiclink.png" alt="Dynamic Link" width="300" height="200">
+<img src="Image/Screenshots/dynamiclink.png" alt="Dynamic Link" width="400" height="650">
 
-<img src="Image/Screenshots/resolverlink.png" alt="Resolver Link" width="300" height="200">
+<img src="Image/Screenshots/resolverlink.png" alt="Resolver Link" width="400" height="650">
 
 ### 📊 Campaign Data Screen (`CampaignDataScreen`)
 **Location**: `lib/Screens/CampaignDataScreen.dart`
@@ -285,7 +285,7 @@ Retrieve and display campaign attribution data:
 3. View all available attribution data
 4. Track event with campaign data (optional)
 
-<img src="Image/Screenshots/campaigndata.png" alt="Campaign Data" width="300" height="200">
+<img src="Image/Screenshots/campaigndata.png" alt="Campaign Data" width="400" height="650">
 
 ### 🛒 Product Page Screen (`ProductPageScreen`)
 **Location**: `lib/Screens/ProductPageScreen.dart`
@@ -304,7 +304,7 @@ E-commerce product page simulation:
 - Custom event IDs for e-commerce flow
 - Navigation to cart screen
 
-<img src="Image/Screenshots/productpage.png" alt="Product Page" width="300" height="200">
+<img src="Image/Screenshots/productpage.png" alt="Product Page" width="400" height="650">
 
 ### 🛒 Add to Cart Screen (`AddToCartScreen`)
 **Location**: `lib/Screens/AddtoCartScreen.dart`
