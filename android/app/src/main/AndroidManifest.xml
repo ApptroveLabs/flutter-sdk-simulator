@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    
+    <!-- Optional permissions for enhanced tracking -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 
     <application
         android:label="flutter_simulator"
@@ -35,16 +40,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- Add your deep link configurations -->
-                <data
-                    android:host="www.trackier.com"
-                    android:pathPrefix="/product"
-                    android:scheme="unilink" />
 
                 <!-- App Link -->
                 <data
-                    android:host="trackier.u9ilnk.me"
-                    android:pathPrefix="/d/"
+                    android:host="trackier58.u9ilnk.me"
+                    android:pathPrefix="/d"
                     android:scheme="https" />
             </intent-filter>
             <intent-filter>
@@ -88,6 +88,10 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Meta apps for social sharing -->
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.facebook.lite" />
+        <package android:name="com.instagram.android" />
     </queries>
 
 </manifest>

@@ -44,10 +44,20 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Android Install Referrer for accurate app install tracking
+    implementation 'com.android.installreferrer:installreferrer:2.2'
+    
+    // Google Play Services Ads Identifier for advertising ID tracking
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 }

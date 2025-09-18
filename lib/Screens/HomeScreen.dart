@@ -5,7 +5,7 @@ class EventsTrackingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trackier SDK Event Tracking'),
+        title: Text('Trackier Flutter SDK'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -42,6 +42,14 @@ class EventsTrackingScreen extends StatelessWidget {
               SizedBox(height: 10),
               _buildButton(context, 'Product Page', () {
                 Navigator.pushNamed(context, '/productPage');
+              }),
+              SizedBox(height: 10),
+              _buildButton(context, 'Dynamic Link', () {
+                Navigator.pushNamed(context, '/dynamicLink');
+              }),
+              SizedBox(height: 10),
+              _buildButton(context, 'Campaign Data', () {
+                Navigator.pushNamed(context, '/campaignData');
               }),
             ],
           ),

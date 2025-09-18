@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'HomeScreen.dart';
 
 class CakeScreen extends StatelessWidget {
   final String? productId;
   final String? quantity;
   final String? actionData;
   final String? dlv;
+  final String? price;
 
   CakeScreen({
     this.productId,
     this.quantity,
     this.actionData,
     this.dlv,
+    this.price,
   });
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("CakeScreen received: productId=$productId, quantity=$quantity, actionData=$actionData, dlv=$dlv");
+    debugPrint("CakeScreen received: productId=$productId, quantity=$quantity, actionData=$actionData, dlv=$dlv, price=$price");
 
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +27,12 @@ class CakeScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            // Navigate to home screen instead of just popping
+            // This prevents blank screen when CakeScreen was reached via pushReplacement
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => EventsTrackingScreen()),
+            );
           },
         ),
       ),
@@ -50,6 +58,12 @@ class CakeScreen extends StatelessWidget {
             Text(
               "Quantity: ${quantity ?? '0'}",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            // Price
+            Text(
+              "Price: \$${price ?? '0'}",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.green),
             ),
             SizedBox(height: 10),
             // JSON Data
@@ -81,18 +95,18 @@ class CakeScreen extends StatelessWidget {
 
     switch (productId) {
       case "blueberry":
-        return 'Image/blueberrycupcake.png'; // Ensure you have this image in your assets
+        return 'Image/blueberrycupcake.jpeg'; // Fixed extension to match actual file
       case "chocochip":
-        return 'Image/chocochipcupcake.png'; // Ensure you have this image in your assets
+        return 'Image/chocochipcupcake.png'; // Correct extension
       case "vanilla":
-        return 'Image/vanillaccupake.png'; // Ensure you have this image in your assets
+        return 'Image/vanillaccupake.jpeg'; // Fixed extension to match actual file
       default:
         return 'Image/chocochipcupcake.png'; // Default image if none match
     }
   }
 
   String _getJsonData() {
-    return '{"Action": "$actionData", "Dlv": "$dlv", "Quantity": "$quantity", "Product": "$productId"}';
+    return '{"Action": "$actionData", "Dlv": "$dlv", "Quantity": "$quantity", "Product": "$productId", "Price": "$price"}';
   }
 
   void _copyDataToClipboard(BuildContext context) {
