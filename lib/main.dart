@@ -9,6 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'apple_search_ads_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 
 import 'package:app_links/app_links.dart';
@@ -282,7 +283,9 @@ void _initializeSDKs() async {
         print('Already navigated from deep link, ignoring subsequent callbacks');
         return;
       }
-      
+
+
+
       // Parse the resolved deep link and extract parameters
       if (uri != null && uri.isNotEmpty) {
         try {
@@ -320,17 +323,27 @@ void _initializeSDKs() async {
     // Apple Ads Attribution Token - Must be called BEFORE SDK initialization
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       try {
-        print("Attempting to get Apple Ads Attribution Token...");
-        final token = await AppleSearchAdsHelper.getAttributionToken();
-        if (token != null && token.isNotEmpty) {
-          print('Apple Ads Token received: $token');
-          Trackierfluttersdk.updateAppleAdsToken(token);
-          print("Apple Ads Token updated successfully.");
+        // First, request App Tracking Transparency permission
+        print("Requesting App Tracking Transparency permission...");
+        final bool authorized = await AppleSearchAdsHelper.requestTrackingAuthorization();
+        if (authorized) {
+          print("ATT permission granted, proceeding with Apple Ads token retrieval...");
+          
+          // Get Apple Ads Attribution Token
+          print("Attempting to get Apple Ads Attribution Token...");
+          final token = await AppleSearchAdsHelper.getAttributionToken();
+          if (token != null && token.isNotEmpty) {
+            print('Apple Ads Token received: $token');
+            Trackierfluttersdk.updateAppleAdsToken(token);
+            print("Apple Ads Token updated successfully.");
+          } else {
+            print('Apple Ads Token is empty or null');
+          }
         } else {
-          print('Apple Ads Token is empty or null');
+          print("ATT permission denied, skipping Apple Ads token retrieval");
         }
       } catch (error) {
-        print('Error getting Apple Ads token: $error');
+        print('Error with Apple Ads attribution: $error');
         // Continue with SDK initialization even if Apple Ads token fails
       }
     } else {
@@ -339,7 +352,11 @@ void _initializeSDKs() async {
 
     // Initialize Trackier SDK
     Trackierfluttersdk.initializeSDK(trackerSDKConfig);
+
+
     print("Trackier SDK initialized successfully.");
+
+    _initializeFCM();
 
     // Set Trackier ID as Firebase user property for uninstall tracking
     await _setTrackierUserProperty();
@@ -444,5 +461,19 @@ Future<Uri?> _getInitialDeepLink() async {
   } catch (e) {
     print("Error retrieving initial deep link: $e");
     return null;
+  }
+}
+
+/// Initialize Firebase Cloud Messaging
+Future<void> _initializeFCM() async {
+  try {
+
+    // Listen for token refresh and send to Trackier SDK
+    FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
+      print('FCM Token refreshed: $token');
+      Trackierfluttersdk.sendFcmToken(token);
+    });
+  } catch (e) {
+    print('Error initializing FCM: $e');
   }
 }

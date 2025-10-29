@@ -36,7 +36,8 @@ This simulator app demonstrates the following Trackier SDK features:
 - Retargeting detection
 
 ### 5. **Firebase Integration**
-- Firebase Analytics for uninstall tracking
+- Firebase Analytics for uninstall tracking (Method 1)
+- FCM Token for uninstall tracking (Method 2)
 - User property mapping
 - Cross-platform analytics
 
@@ -85,6 +86,7 @@ SECRET_KEY=your_secret_key_here
 - Add your `GoogleService-Info.plist` to `ios/Runner/`
 - Add your `google-services.json` to `android/app/`
 - Update `lib/firebase_options.dart` with your Firebase configuration
+- Ensure Firebase Cloud Messaging (FCM) is enabled in Firebase Console for uninstall tracking
 
 ### 5. iOS Setup
 ```bash
@@ -382,10 +384,13 @@ void _initializeSDKs() async {
   // 3. Trackier SDK initialization
   Trackierfluttersdk.initializeSDK(config);
   
-  // 4. Firebase user property setting
+  // 4. Initialize FCM for uninstall tracking (Method 2)
+  _initializeFCM();
+  
+  // 5. Firebase user property setting for uninstall tracking (Method 1)
   _setTrackierUserProperty();
   
-  // 5. App open event tracking
+  // 6. App open event tracking
   _trackAppOpen();
 }
 ```
@@ -484,7 +489,10 @@ class AppleSearchAdsHelper {
 ```
 
 ### Uninstall Tracking
-Firebase Analytics integration for uninstall tracking:
+The app implements two methods for uninstall tracking:
+
+#### Method 1: Firebase Analytics User Property
+Set Trackier ID as Firebase user property for uninstall tracking:
 
 ```dart
 Future<void> _setTrackierUserProperty() async {
@@ -495,6 +503,25 @@ Future<void> _setTrackierUserProperty() async {
   );
 }
 ```
+
+#### Method 2: FCM Token
+Send FCM token to Trackier SDK for uninstall tracking via push notifications:
+
+```dart
+Future<void> _initializeFCM() async {
+  try {
+    // Listen for token refresh and send to Trackier SDK
+    FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
+      print('FCM Token refreshed: $token');
+      Trackierfluttersdk.sendFcmToken(token);
+    });
+  } catch (e) {
+    print('Error initializing FCM: $e');
+  }
+}
+```
+
+**Note**: Both methods are automatically initialized after Trackier SDK initialization. The FCM token is sent to Trackier SDK whenever it refreshes/changes, enabling reliable uninstall tracking through push notification delivery status.
 
 ### User Management
 Comprehensive user data tracking:
@@ -532,6 +559,13 @@ Trackierfluttersdk.setGender(Gender.Male);
    - Check AdServices framework availability
    - Ensure proper permissions
 
+5. **FCM Token Error**
+   - Ensure `firebase_messaging` package is added to `pubspec.yaml`
+   - Verify Firebase Cloud Messaging is enabled in Firebase Console
+   - Check that `google-services.json` is properly configured
+   - On emulators, FCM token might not be available immediately (this is normal)
+   - Ensure FCM is initialized after Trackier SDK initialization
+
 ### Debug Mode
 Enable debug logging:
 
@@ -564,6 +598,10 @@ developer.log('Debug message', name: 'TrackierSDK');
 - `Trackierfluttersdk.createDynamicLink(...)` - Create dynamic link
 - `Trackierfluttersdk.resolveDeeplinkUrl(url)` - Resolve deep link
 
+#### Uninstall Tracking
+- `Trackierfluttersdk.sendFcmToken(token)` - Send FCM token to Trackier SDK for uninstall tracking
+- `Trackierfluttersdk.getTrackierId()` - Get Trackier ID for Firebase Analytics user property
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -587,7 +625,8 @@ For support and questions:
 
 - **v1.0.0** - Initial release with basic SDK features
 - **v1.1.0** - Added dynamic links and campaign data
-- **v1.2.0** - Firebase integration and uninstall tracking
+- **v1.2.0** - Firebase integration and uninstall tracking (Analytics method)
+- **v1.2.1** - Added FCM token method for uninstall tracking
 - **v1.3.0** - Apple Search Ads attribution support
 - **v1.4.0** - Enhanced deep link handling and navigation
 
