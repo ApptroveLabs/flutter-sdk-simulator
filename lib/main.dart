@@ -39,10 +39,7 @@ void main() async {
   // Load the environment variables from the .env file
   await dotenv.load();
 
-  // Handle deep link logic before running the app
-  final Uri? initialDeepLink = await _getInitialDeepLink();
-
-  runApp(MyApp(initialDeepLink: initialDeepLink));
+  runApp(MyApp());
   
   // Initialize SDKs after the app is running
   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,9 +48,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final Uri? initialDeepLink;
-
-  const MyApp({super.key, required this.initialDeepLink});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +60,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: '/',
-      home: initialDeepLink != null
-          ? _handleInitialDeepLink(context, initialDeepLink!)
-          : SplashScreen(),
+      home: SplashScreen(),
       routes: {
         '/builtInEvents': (context) => BuiltInEventsScreen(),
         '/customsEvents': (context) => CustomsEventsScreen(),
@@ -79,66 +72,6 @@ class MyApp extends StatelessWidget {
         '/campaignData': (context) => CampaignDataScreen(),
       },
     );
-  }
-
-  Widget _handleInitialDeepLink(BuildContext context, Uri deepLink) {
-    String? productId = deepLink.queryParameters['product_id'];
-    String? quantity = deepLink.queryParameters['quantity'];
-    String? actionData = deepLink.queryParameters['actionData'];
-    String? dlv = deepLink.queryParameters['dlv'];
-    String? cakename = deepLink.queryParameters['cakename'];
-    String? price = deepLink.queryParameters['price'];
-    String? clickedApptroveLink = deepLink.queryParameters['clicked_apptrove_link'];
-    String? nonApptroveLink = deepLink.queryParameters['non_apptrove_link'];
-
-    print('Deep link parameters:');
-    print('  dlv: $dlv');
-    print('  cakename: $cakename');
-    print('  price: $price');
-    print('  clicked_apptrove_link: $clickedApptroveLink');
-    print('  non_apptrove_link: $nonApptroveLink');
-
-    // Handle deep link based on dlv (deep link value)
-    if (deepLink.pathSegments.isNotEmpty && deepLink.pathSegments[0] == 'd') {
-      // Route to appropriate screen based on dlv
-      switch (dlv) {
-        case 'blueberrycupcake':
-          return CakeScreen(
-            productId: cakename ?? 'blueberry',
-            quantity: quantity ?? '1',
-            actionData: actionData,
-            dlv: dlv,
-            price: price,
-          );
-        case 'chocochipcupcake':
-          return CakeScreen(
-            productId: cakename ?? 'chocochip',
-            quantity: quantity ?? '1',
-            actionData: actionData,
-            dlv: dlv,
-            price: price,
-          );
-        case 'vanillaccupake':
-          return CakeScreen(
-            productId: cakename ?? 'vanilla',
-            quantity: quantity ?? '1',
-            actionData: actionData,
-            dlv: dlv,
-            price: price,
-          );
-        default:
-          // Default to CakeScreen with available parameters
-          return CakeScreen(
-            productId: productId ?? cakename ?? 'default',
-            quantity: quantity ?? '1',
-            actionData: actionData,
-            dlv: dlv,
-            price: price,
-          );
-      }
-    }
-
-    return EventsTrackingScreen();
   }
 }
 
@@ -269,10 +202,7 @@ void _initializeSDKs() async {
     // Set app secrets
     trackerSDKConfig.setAppSecret(secretId,secretKey);
 
-    // Parse deep link before SDK initialization for test send the test url or get the link from app launch and send to parsedeeplink function
-    const String testDeepLink = 'https://trackier58.u9ilnk.me/d/M8BdyNNEnK';
-    print('Parsing deep link before SDK initialization: $testDeepLink');
-    Trackierfluttersdk.parseDeeplink(testDeepLink);
+
 
     // Deferred Deep Link Callback - Must be set BEFORE SDK initialization
     trackerSDKConfig.deferredDeeplinkCallback = (uri) {
@@ -352,9 +282,10 @@ void _initializeSDKs() async {
 
     // Initialize Trackier SDK
     Trackierfluttersdk.initializeSDK(trackerSDKConfig);
-
-
     print("Trackier SDK initialized successfully.");
+
+    // Initialize deep link listener after SDK is initialized
+    _initDeepLinkListener();
 
     _initializeFCM();
 
@@ -367,6 +298,30 @@ void _initializeSDKs() async {
     print("Error initializing Trackier SDK: $e");
   }
 }
+
+// Initialize deep link listener after SDK is initialized
+// Listen for incoming URLs and send to Trackier SDK
+void _initDeepLinkListener() {
+  final appLinks = AppLinks();
+  
+  // Listen for incoming links and send to Trackier SDK
+  appLinks.uriLinkStream.listen((Uri? uri) {
+    if (uri != null) {
+      print('Applink incoming url: ${uri.toString()}');
+      Trackierfluttersdk.parseDeeplink(uri.toString());
+    }
+  }, onError: (err) {
+    print('Error listening to deep links: $err');
+  });
+
+
+  // For Testing purpose Send direcly
+  // Parse deep link before SDK initialization for test send the test url or get the link from app launch and send to parsedeeplink function
+  // const String testDeepLink = 'https://trackier58.u9ilnk.me/d/iOhRy6hQMG';
+  // print('Parsing deep link after SDK initialization: $testDeepLink');
+  // Trackierfluttersdk.parseDeeplink(testDeepLink);
+}
+
 
 /// Track app open event with complete registration example
 void _trackAppOpen() {
@@ -423,7 +378,7 @@ void _trackAppOpen() {
       "SignupMethod": "Email",
       "AppVersion": "1.0.0",
     };
-    
+
     Trackierfluttersdk.setUserAdditonalDetail(userDetails);
 
     // Send the event to Apptrove
@@ -434,13 +389,13 @@ void _trackAppOpen() {
   }
 }
 
-/// Set Trackier ID as Firebase user property for uninstall tracking
+/// Set Trackier ID as Firebase user property for uninstall tracking Through Firebase Analytics
 Future<void> _setTrackierUserProperty() async {
   try {
     print("Setting Trackier ID as Firebase user property...");
     final analytics = FirebaseAnalytics.instance;
     final trackierId = await Trackierfluttersdk.getTrackierId();
-    
+
     if (trackierId.isNotEmpty) {
       await analytics.setUserProperty(name: "ct_objectId", value: trackierId);
       print("Trackier ID set as Firebase user property: $trackierId");
@@ -453,22 +408,11 @@ Future<void> _setTrackierUserProperty() async {
   }
 }
 
-Future<Uri?> _getInitialDeepLink() async {
-  try {
-    final appLinks = AppLinks();
-    final Uri? initialLink = await appLinks.getInitialLink();
-    return initialLink;
-  } catch (e) {
-    print("Error retrieving initial deep link: $e");
-    return null;
-  }
-}
-
 /// Initialize Firebase Cloud Messaging
 Future<void> _initializeFCM() async {
   try {
 
-    // Listen for token refresh and send to Trackier SDK
+    // Listen for token refresh and send to Trackier SDK For Uninstall trackier through FCM
     FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
       print('FCM Token refreshed: $token');
       Trackierfluttersdk.sendFcmToken(token);
