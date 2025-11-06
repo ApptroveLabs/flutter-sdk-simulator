@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_simulator/Screens/HomeScreen.dart';
@@ -309,6 +311,11 @@ void _initDeepLinkListener() {
     if (uri != null) {
       print('Applink incoming url: ${uri.toString()}');
       Trackierfluttersdk.parseDeeplink(uri.toString());
+    }else{
+      // Subscribe to attribution link for deferred deep links (iOS only)
+      if (Platform.isIOS) {
+        Trackierfluttersdk.subscribeAttributionlink();
+      }
     }
   }, onError: (err) {
     print('Error listening to deep links: $err');
