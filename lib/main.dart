@@ -14,7 +14,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 
-import 'package:app_links/app_links.dart';
 import 'Screens/BuildinEventScreen.dart';
 import 'Screens/CustomEventsScreen.dart';
 import 'Screens/DeepLinkScreen.dart';
@@ -182,18 +181,18 @@ void _initializeSDKs() async {
   try {
     // Get the environment variables directly from dotenv
     final trDevKey = dotenv.env['TR_DEV_KEY'] ?? "default_value";
-    final secretId = dotenv.env['SECRET_ID'] ?? "default_value";
-    final secretKey = dotenv.env['SECRET_KEY'] ?? "default_value";
+    // final secretId = dotenv.env['SECRET_ID'] ?? "default_value";
+    // final secretKey = dotenv.env['SECRET_KEY'] ?? "default_value";
 
     final trackerSDKConfig = TrackerSDKConfig(trDevKey, "development");
 
-    trackerSDKConfig.setFacebookAppId("234234"); // Only for android Users Read docs for details
+    // trackerSDKConfig.setFacebookAppId("234234"); // Only for android Users Read docs for details
 
     // Use this for secure Install and event Body
 
-    // trackerSDKConfig.setAppId("MYcJ6a79MQ"); // Get from Panel
-    // trackerSDKConfig.setEncryptionKey("sBxN9FYzeBmYBxk/kBUZsihP3WAG7WvM0QG2KLesJoU="); // Get from Panel
-    // trackerSDKConfig.setEncryptionType(TrackierEncryptionType.AES_GCM);
+    trackerSDKConfig.setAppId("gppNtor2hH"); // Get from Panel
+    trackerSDKConfig.setEncryptionKey("zbWpNbF2epK1TUltzfKIlUTleaXqraEG+glgpnwiEN8="); // Get from Panel
+    trackerSDKConfig.setEncryptionType(TrackierEncryptionType.AES_GCM);
 
     // Set user details
     Trackierfluttersdk.setUserId("009013452535353");
@@ -202,7 +201,7 @@ void _initializeSDKs() async {
     Trackierfluttersdk.setUserPhone("8130300721");
 
     // Set app secrets
-    trackerSDKConfig.setAppSecret(secretId,secretKey);
+    // trackerSDKConfig.setAppSecret(secretId,secretKey);
 
 
 
@@ -290,6 +289,10 @@ void _initializeSDKs() async {
     _initDeepLinkListener();
 
     _initializeFCM();
+    // Initialize push tokens (FCM for Android, APNs for iOS)
+    if (Platform.isIOS) {
+      await _getAndSendApnsToken();
+    }
 
     // Set Trackier ID as Firebase user property for uninstall tracking
     await _setTrackierUserProperty();
@@ -304,27 +307,27 @@ void _initializeSDKs() async {
 // Initialize deep link listener after SDK is initialized
 // Listen for incoming URLs and send to Trackier SDK
 void _initDeepLinkListener() {
-  final appLinks = AppLinks();
-  
-  // Listen for incoming links and send to Trackier SDK
-  appLinks.uriLinkStream.listen((Uri? uri) {
-    if (uri != null) {
-      print('Applink incoming url: ${uri.toString()}');
-      Trackierfluttersdk.parseDeeplink(uri.toString());
-    }else{
-      // Subscribe to attribution link for deferred deep links (iOS only)
-      if (Platform.isIOS) {
-        Trackierfluttersdk.subscribeAttributionlink();
-      }
-    }
-  }, onError: (err) {
-    print('Error listening to deep links: $err');
-  });
+  // final appLinks = AppLinks();
+  //
+  // // Listen for incoming links and send to Trackier SDK
+  // appLinks.uriLinkStream.listen((Uri? uri) {
+  //   if (uri != null) {
+  //     print('Applink incoming url: ${uri.toString()}');
+  //     Trackierfluttersdk.parseDeeplink(uri.toString());
+  //   }else{
+  //     // Subscribe to attribution link for deferred deep links (iOS only)
+  //     if (Platform.isIOS) {
+  //       Trackierfluttersdk.subscribeAttributionlink();
+  //     }
+  //   }
+  // }, onError: (err) {
+  //   print('Error listening to deep links: $err');
+  // });
 
 
   // For Testing purpose Send direcly
   // Parse deep link before SDK initialization for test send the test url or get the link from app launch and send to parsedeeplink function
-  // const String testDeepLink = 'https://trackier58.u9ilnk.me/d/iOhRy6hQMG';
+  // const String testDeepLink = 'https://superliving.u9ilnk.me/d/iOhRy6hQMG';
   // print('Parsing deep link after SDK initialization: $testDeepLink');
   // Trackierfluttersdk.parseDeeplink(testDeepLink);
 }
@@ -340,9 +343,9 @@ void _trackAppOpen() {
 
     // Built-in fields for event tracking
     event.orderId = "REG_001";         // String: Unique registration ID
-    event.couponCode = "";             // String: No coupon used (empty for free plan)
-    event.discount = 0.0;              // double: No discount applied
-    event.revenue = 0.0;               // double: No revenue (free signup)
+    event.couponCode = "coupontest123satyam";             // String: No coupon used (empty for free plan)
+    event.discount = 20.0;              // double: No discount applied
+    event.revenue = 20.0;               // double: No revenue (free signup)
     event.currency = "USD";            // String: Currency code
     event.productId = "23434234";      // string : Add product id
 
@@ -426,5 +429,66 @@ Future<void> _initializeFCM() async {
     });
   } catch (e) {
     print('Error initializing FCM: $e');
+  }
+}
+
+
+/// Get and send APNs token for iOS - with retry logic
+/// Requests notification permissions and retrieves APNs token, then sends to Trackier SDK
+Future<void> _getAndSendApnsToken() async {
+  if (!Platform.isIOS) {
+    print('Not iOS platform, skipping APNs token retrieval');
+    return;
+  }
+
+  try {
+    final messaging = FirebaseMessaging.instance;
+    
+    // Request notification permissions (required for APNs token on iOS)
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('Notification permission granted, getting APNs token...');
+    } else {
+      print('Notification permission denied: ${settings.authorizationStatus}');
+      // Still try to get token even if permission is denied (might work for some cases)
+    }
+
+    // Get APNs token with retry logic
+    String? apnsToken;
+    int retryCount = 0;
+    const maxRetries = 3;
+    const retryDelay = Duration(seconds: 2);
+
+    while (apnsToken == null && retryCount < maxRetries) {
+      try {
+        apnsToken = await messaging.getAPNSToken();
+        print('APNs Token attempt ${retryCount + 1}: ${apnsToken ?? 'null'}');
+      } catch (e) {
+        print('Error getting APNs token: $e');
+      }
+
+      if (apnsToken == null) {
+        retryCount++;
+        if (retryCount < maxRetries) {
+          print('APNs token not ready, retrying in ${retryDelay.inSeconds}s...');
+          await Future.delayed(retryDelay);
+        }
+      }
+    }
+
+    if (apnsToken != null && apnsToken.isNotEmpty) {
+      print('Raw APNs Token: $apnsToken');
+      Trackierfluttersdk.sendAPNToken(apnsToken);
+      print('APNs Token sent to Trackier successfully');
+    } else {
+      print('Failed to get APNs token after $maxRetries retries (common on simulator; test on device)');
+    }
+  } catch (e) {
+    print('Error getting APNs token: $e');
   }
 }

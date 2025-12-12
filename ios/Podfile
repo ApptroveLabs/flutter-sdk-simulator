@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '13.0'
+platform :ios, '13.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -28,8 +28,8 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
+  use_frameworks! :linkage => :static
+  # use_modular_headers! - disabled to fix Firebase non-modular header issue
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
@@ -38,7 +38,53 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  # Set minimum deployment target for entire Pods project
+  installer.pods_project.build_configurations.each do |config|
+    if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 13.0
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+  end
+  
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    
+    target.build_configurations.each do |config|
+      # Fix for Firebase modular headers issue - apply to all targets
+      config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      
+      # Fix iOS deployment target - ensure minimum iOS 13.0 for Trackier SDK compatibility
+      current_target = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f
+      if current_target < 13.0
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      end
+      
+      # Ensure Trackier SDK pods have iOS 13.0+ deployment target and proper Swift settings
+      if target.name.include?('trackier') || target.name.include?('Trackier')
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+        config.build_settings['SWIFT_VERSION'] = '5.0'
+      end
+      
+      # Additional fixes for Firebase pods and firebase_messaging plugin
+      if target.name.include?('Firebase') || target.name.include?('firebase') || target.name == 'firebase_messaging'
+        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+        # Explicitly allow non-modular includes for Firebase-related targets
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+      
+      # Critical fix for firebase_messaging plugin - allow non-modular includes
+      if target.name == 'firebase_messaging'
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES'] = 'YES'
+      end
+      
+      # Fix for thin binary frameworks (like Upshot from flutter_upshot_plugin)
+      # Note: The actual fix for thin binary frameworks should be handled at the Flutter level
+      # or by updating to Flutter 3.10+ which has better thin binary handling
+      # For now, we ensure proper code signing settings
+      if target.name.include?('Upshot')
+        config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+        puts "⚠️  Detected Upshot target - ensure thin binary frameworks are handled correctly"
+      end
+    end
   end
 end
