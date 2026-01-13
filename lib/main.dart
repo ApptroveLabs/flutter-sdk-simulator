@@ -281,6 +281,8 @@ void _initializeSDKs() async {
       print("Not iOS platform, skipping Apple Ads token retrieval");
     }
 
+    Trackierfluttersdk.waitForATTUserAuthorization(10);
+
     // Initialize Trackier SDK
     Trackierfluttersdk.initializeSDK(trackerSDKConfig);
     print("Trackier SDK initialized successfully.");
