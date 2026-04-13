@@ -47,7 +47,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
                 Text(
-                  "Thank you for shopping with Vist Market",
+                  "Thank you for shopping with Flutmarket",
                   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),

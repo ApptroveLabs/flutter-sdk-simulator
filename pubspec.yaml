@@ -46,6 +46,10 @@ dependencies:
   firebase_core: ^2.24.0
   firebase_analytics: ^10.7.4
   firebase_messaging: ^14.7.4
+  share_plus: ^10.1.4
+  google_fonts: ^6.2.1
+  shared_preferences: ^2.3.2
+  flutter_svg: ^2.0.10+1
 
 
 
@@ -59,7 +63,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "Image/app_logo.png"
+  image_path: "Image/flutmarket_app_icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -87,6 +91,7 @@ flutter:
     - Image/chocochipcupcake.png
     - Image/vanillaccupake.jpeg
     - Image/apptrovelogo.png
+    - Image/flutmarket_icon_logo.svg
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

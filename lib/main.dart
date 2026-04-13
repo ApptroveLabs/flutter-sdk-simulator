@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_simulator/Screens/HomeScreen.dart';
 import 'package:flutter_simulator/Screens/SplashScreen.dart';
+import 'package:flutter_simulator/Screens/ProductDetailScreen.dart';
+import 'package:flutter_simulator/Models/Product.dart';
 import 'package:apptrove_sdk_flutter/apptroveconfig.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
@@ -13,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'Screens/BuildinEventScreen.dart';
 import 'Screens/CustomEventsScreen.dart';
@@ -54,12 +57,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Vist Market',
+      title: 'Flutmarket',
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'Roboto',
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.indigoAccent,
           primary: Colors.indigoAccent,
@@ -172,6 +175,18 @@ void _navigateFromDeferredDeepLink(String uri) {
                 ),
               ),
             );
+            break;
+          case 'ProductDetail':
+            final String? productId = resolvedUri.queryParameters['product_id'];
+            if (productId != null) {
+              final product = PreloadedProducts.products.firstWhere(
+                (p) => p.id.toString() == productId,
+                orElse: () => PreloadedProducts.products[0],
+              );
+              navigatorKey.currentState?.push(
+                MaterialPageRoute(builder: (context) => ProductDetailScreen(product: product)),
+              );
+            }
             break;
           default:
             // Default to CakeScreen with available parameters

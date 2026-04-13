@@ -12,7 +12,7 @@ class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
   final TextEditingController _linkController = TextEditingController(text: 'https://apptrove58.u9ilnk.me');
   final TextEditingController _domainUriPrefixController = TextEditingController(text: 'apptrove58.u9ilnk.me');
   final TextEditingController _deepLinkValueController = TextEditingController(text: 'CakeActivity');
-  final TextEditingController _androidRedirectController = TextEditingController(text: 'https://play.google.com/store/apps/details?id=com.apptrove.vistmarket');
+  final TextEditingController _androidRedirectController = TextEditingController(text: 'https://play.google.com/store/apps/details?id=com.apptrove.flutmarket');
   final TextEditingController _iosRedirectController = TextEditingController(text: 'https://www.example.com/ios');
   final TextEditingController _desktopRedirectController = TextEditingController(text: 'https://apptrove.com');
   final TextEditingController _productIdController = TextEditingController(text: 'chocochip');

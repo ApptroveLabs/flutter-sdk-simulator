@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../Models/Product.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -40,22 +42,102 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     appTroveEvent.param4 = selectedSize; 
     AppTroveFlutterSdk.trackEvent(appTroveEvent);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) => Container(
+        padding: EdgeInsets.all(24),
+        height: 350,
+        child: Column(
           children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 10),
-            Expanded(child: Text("${widget.product.name} added to cart")),
+            Container(
+              width: 50,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            SizedBox(height: 30),
+            Icon(Icons.check_circle, size: 80, color: Colors.green),
+            SizedBox(height: 20),
+            Text(
+              "Added to Cart!",
+              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "${widget.product.name} (Size: $selectedSize) has been added to your basket.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(color: Colors.grey[600]),
+            ),
+            Spacer(),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    ),
+                    child: Text("Continue Shopping"),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/addtocart');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigoAccent,
+                      padding: EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    ),
+                    child: Text("View Cart", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
           ],
         ),
-        backgroundColor: Colors.indigo.shade800,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
+  }
 
-    Navigator.pushNamed(context, '/addtocart');
+  void _shareProduct() async {
+    try {
+      // Create dynamic link using Apptrove SDK
+      final dynamicLink = await AppTroveFlutterSdk.createDynamicLink(
+        templateId: 'wy23Px',
+        link: 'https://apptrove58.u9ilnk.me',
+        domainUriPrefix: 'apptrove58.u9ilnk.me',
+        deepLinkValue: 'ProductDetail',
+        sdkParameters: {
+          'product_id': widget.product.id.toString(),
+          'product_name': widget.product.name,
+        },
+        socialMeta: {
+          'title': 'Flutmarket - ${widget.product.name}',
+          'description': 'Check out this premium ${widget.product.name} only for \$${widget.product.price.toStringAsFixed(2)}!',
+          'imageLink': widget.product.imageUrl,
+        },
+      );
+
+      Share.share(
+        'Check out this premium ${widget.product.name} on Flutmarket!\n\nLink: $dynamicLink',
+      );
+    } catch (e) {
+      // Fallback in case link generation fails
+      Share.share(
+        'Check out this premium ${widget.product.name} on Flutmarket for only \$${widget.product.price.toStringAsFixed(2)}!\n\nDownload the app now!',
+      );
+    }
   }
 
   @override
@@ -116,7 +198,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 child: IconButton(
                   icon: Icon(Icons.share, color: Colors.indigo.shade900),
-                  onPressed: () {},
+                  onPressed: _shareProduct,
                 ),
               ),
             ],

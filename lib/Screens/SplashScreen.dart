@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'HomeScreen.dart';
 import 'OnboardingScreen.dart';
+import 'LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -34,27 +37,37 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _animController.forward();
 
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 3), () async {
       if (mounted) {
-        if (_isFirstLaunch) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OnboardingScreen(
-                onComplete: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => EventsTrackingScreen()),
-                  );
-                },
-              ),
-            ),
-          );
-        } else {
+        final prefs = await SharedPreferences.getInstance();
+        final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+        if (isLoggedIn) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => EventsTrackingScreen()),
           );
+        } else {
+          if (_isFirstLaunch) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OnboardingScreen(
+                  onComplete: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                ),
+              ),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          }
         }
       }
     });
@@ -102,11 +115,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                             )
                           ],
                         ),
-                        child: Icon(Icons.storefront, size: 80, color: Colors.white),
+                        child: SvgPicture.asset(
+                          'Image/flutmarket_icon_logo.svg',
+                          height: 80,
+                          width: 80,
+                          colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
                       ),
                       SizedBox(height: 35),
                       Text(
-                        'VIST MARKET',
+                        'FLUTMARKET',
                         style: TextStyle(
                           fontSize: 36,
                           fontWeight: FontWeight.w900,
