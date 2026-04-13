@@ -2,6 +2,13 @@ PODS:
   - Alamofire (5.9.1)
   - app_links (6.4.1):
     - Flutter
+  - apptrove-ios-sdk (2.0.1):
+    - Alamofire (~> 5.9.0)
+    - CryptoSwift (~> 1.4.1)
+    - Willow (~> 5.0)
+  - apptrove_sdk_flutter (2.0.1):
+    - apptrove-ios-sdk
+    - Flutter
   - CleverTap-iOS-SDK (7.3.3):
     - SDWebImage (~> 5.11)
   - clevertap_plugin (3.6.0):
@@ -129,13 +136,6 @@ PODS:
   - SDWebImage (5.21.5):
     - SDWebImage/Core (= 5.21.5)
   - SDWebImage/Core (5.21.5)
-  - trackier-ios-sdk (1.6.76):
-    - Alamofire (~> 5.9.0)
-    - CryptoSwift (~> 1.4.1)
-    - Willow (~> 5.0)
-  - trackier_sdk_flutter (1.6.79):
-    - Flutter
-    - trackier-ios-sdk
   - WebEngage (6.16.4):
     - WebEngage/Core (= 6.16.4)
     - WebEngage/Location (= 6.16.4)
@@ -149,17 +149,18 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - apptrove_sdk_flutter (from `.symlinks/plugins/apptrove_sdk_flutter/ios`)
   - clevertap_plugin (from `.symlinks/plugins/clevertap_plugin/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
-  - trackier_sdk_flutter (from `.symlinks/plugins/trackier_sdk_flutter/ios`)
   - webengage_flutter (from `.symlinks/plugins/webengage_flutter/ios`)
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - apptrove-ios-sdk
     - CleverTap-iOS-SDK
     - CryptoSwift
     - Firebase
@@ -174,13 +175,14 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SDWebImage
-    - trackier-ios-sdk
     - WebEngage
     - Willow
 
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
+  apptrove_sdk_flutter:
+    :path: ".symlinks/plugins/apptrove_sdk_flutter/ios"
   clevertap_plugin:
     :path: ".symlinks/plugins/clevertap_plugin/ios"
   firebase_analytics:
@@ -191,14 +193,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
-  trackier_sdk_flutter:
-    :path: ".symlinks/plugins/trackier_sdk_flutter/ios"
   webengage_flutter:
     :path: ".symlinks/plugins/webengage_flutter/ios"
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   app_links: 3dbc685f76b1693c66a6d9dd1e9ab6f73d97dc0a
+  apptrove-ios-sdk: d9d20470bcf8fe31b91c6d593dc15593ac906c5d
+  apptrove_sdk_flutter: 86e1590c41005ca3d9284f9af52d3856b412d4de
   CleverTap-iOS-SDK: 35aaa0ef8adf00b3b2099953c0aba3cde5a554fc
   clevertap_plugin: 274a77b183ef8221fe804de013d061d6b2484f7a
   CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
@@ -218,12 +220,10 @@ SPEC CHECKSUMS:
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   SDWebImage: e9c98383c7572d713c1a0d7dd2783b10599b9838
-  trackier-ios-sdk: 93d333094e2130158750ebffc75054706f95b501
-  trackier_sdk_flutter: 19ae52182c087ba39c9216560c448d7286ee0bae
   WebEngage: 310c6be473e1fc5a50c5a45239c9875c8400d2fb
   webengage_flutter: 8d01ef5974a0c6e06171d7572da609b486d5e55e
   Willow: a6310f9aedcb6f4de8c35b94fd3416a660ae9280
 
-PODFILE CHECKSUM: cb13e2a23d5f2b6fbb99fb816005389029d7c9bc
+PODFILE CHECKSUM: 7fefc0b4e49886d00f932f128942798c84a74aec
 
 COCOAPODS: 1.16.2

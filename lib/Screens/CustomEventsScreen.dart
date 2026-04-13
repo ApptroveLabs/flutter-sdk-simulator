@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trackier_sdk_flutter/trackierevent.dart';
-import 'package:trackier_sdk_flutter/trackierfluttersdk.dart';
-import 'dart:developer';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+
 
 class CustomsEventsScreen extends StatefulWidget {
   @override
@@ -89,60 +89,60 @@ class _CustomsEventsScreenState extends State<CustomsEventsScreen> {
       return;
     }
 
-    // Create a new TrackierEvent
-    TrackierEvent trackierEvent = TrackierEvent(eventId);
+    // Create a new AppTroveEvent
+    AppTroveEvent apptroveEvent = AppTroveEvent(eventId);
 
-    trackierEvent.revenue = revenueValue;
-    trackierEvent.currency = currency;
-    trackierEvent.orderId = "324222233f33";
-    Trackierfluttersdk.setUserEmail("Satyam@Trackier.com");
-    Trackierfluttersdk.setUserId("#jdjdjdjh3");
-    Trackierfluttersdk.setUserName("Satyam Jha");
-    Trackierfluttersdk.setUserPhone("8252786821");
-    Trackierfluttersdk.setGender(Gender.Male);
+    apptroveEvent.revenue = revenueValue;
+    apptroveEvent.currency = currency;
+    apptroveEvent.orderId = "324222233f33";
+    AppTroveFlutterSdk.setUserEmail("Satyam@Apptrove.com");
+    AppTroveFlutterSdk.setUserId("#jdjdjdjh3");
+    AppTroveFlutterSdk.setUserName("Satyam Jha");
+    AppTroveFlutterSdk.setUserPhone("8252786821");
+    AppTroveFlutterSdk.setGender(Gender.Male);
 
 
     // Assign parameters dynamically
-      trackierEvent.setEventValue("Event Send","To Pannel");
+      apptroveEvent.setEventValue("Event Send","To Pannel");
 
 
     // Dynamically assign the values to param1, param2, ..., param10 based on user input
     for (int i = 0; i < paramValues.length; i++) {
       switch (i) {
         case 0:
-          trackierEvent.param1 = paramValues[i];
+          apptroveEvent.param1 = paramValues[i];
           break;
         case 1:
-          trackierEvent.param2 = paramValues[i];
+          apptroveEvent.param2 = paramValues[i];
           break;
         case 2:
-          trackierEvent.param3 = paramValues[i];
+          apptroveEvent.param3 = paramValues[i];
           break;
         case 3:
-          trackierEvent.param4 = paramValues[i];
+          apptroveEvent.param4 = paramValues[i];
           break;
         case 4:
-          trackierEvent.param5 = paramValues[i];
+          apptroveEvent.param5 = paramValues[i];
           break;
         case 5:
-          trackierEvent.param6 = paramValues[i];
+          apptroveEvent.param6 = paramValues[i];
           break;
         case 6:
-          trackierEvent.param7 = paramValues[i];
+          apptroveEvent.param7 = paramValues[i];
           break;
         case 7:
-          trackierEvent.param8 = paramValues[i];
+          apptroveEvent.param8 = paramValues[i];
           break;
         case 8:
-          trackierEvent.param9 = paramValues[i];
+          apptroveEvent.param9 = paramValues[i];
           break;
         case 9:
-          trackierEvent.param10 = paramValues[i];
+          apptroveEvent.param10 = paramValues[i];
           break;
       }
     }
     // Track the event
-    Trackierfluttersdk.trackEvent(trackierEvent);
+    AppTroveFlutterSdk.trackEvent(apptroveEvent);
 
     // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(

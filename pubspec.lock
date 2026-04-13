@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  apptrove_sdk_flutter:
+    dependency: "direct main"
+    description:
+      name: apptrove_sdk_flutter
+      sha256: fc326e8a76b84166e67e41a118075f5f64f99bb1be99f11a099418cde0d45652
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   archive:
     dependency: transitive
     description:
@@ -445,14 +453,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.6"
-  trackier_sdk_flutter:
-    dependency: "direct main"
-    description:
-      name: trackier_sdk_flutter
-      sha256: "7fe04ea29520ae89b4be77dd88d128c3b151656e37dce9ef23eca62e61ea294a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.79"
   typed_data:
     dependency: transitive
     description:

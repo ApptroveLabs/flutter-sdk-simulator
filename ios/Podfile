@@ -52,14 +52,14 @@ post_install do |installer|
       # Fix for Firebase modular headers issue - apply to all targets
       config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
       
-      # Fix iOS deployment target - ensure minimum iOS 13.0 for Trackier SDK compatibility
+      # Fix iOS deployment target - ensure minimum iOS 13.0 for Apptrove SDK compatibility
       current_target = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f
       if current_target < 13.0
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       end
       
-      # Ensure Trackier SDK pods have iOS 13.0+ deployment target and proper Swift settings
-      if target.name.include?('trackier') || target.name.include?('Trackier')
+      # Ensure Apptrove SDK pods have iOS 13.0+ deployment target and proper Swift settings
+      if target.name.include?('apptrove') || target.name.include?('Apptrove')
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
         config.build_settings['SWIFT_VERSION'] = '5.0'
       end

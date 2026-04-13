@@ -35,7 +35,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  trackier_sdk_flutter: ^1.6.79
+  apptrove_sdk_flutter: ^2.0.1
   clevertap_plugin: ^3.5.2
   webengage_flutter: ^1.6.0
   android_play_install_referrer: ^0.4.0
@@ -86,7 +86,7 @@ flutter:
     - Image/blueberrycupcake.jpeg
     - Image/chocochipcupcake.png
     - Image/vanillaccupake.jpeg
-    - Image/trackierlogo.png
+    - Image/apptrovelogo.png
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

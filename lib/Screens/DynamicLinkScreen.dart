@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:trackier_sdk_flutter/trackierfluttersdk.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 
 class DynamicLinkScreen extends StatefulWidget {
   @override
@@ -9,12 +9,12 @@ class DynamicLinkScreen extends StatefulWidget {
 
 class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
   final TextEditingController _templateIdController = TextEditingController(text: 'wy23Px');
-  final TextEditingController _linkController = TextEditingController(text: 'https://trackier58.u9ilnk.me');
-  final TextEditingController _domainUriPrefixController = TextEditingController(text: 'trackier58.u9ilnk.me');
+  final TextEditingController _linkController = TextEditingController(text: 'https://apptrove58.u9ilnk.me');
+  final TextEditingController _domainUriPrefixController = TextEditingController(text: 'apptrove58.u9ilnk.me');
   final TextEditingController _deepLinkValueController = TextEditingController(text: 'CakeActivity');
-  final TextEditingController _androidRedirectController = TextEditingController(text: 'https://play.google.com/store/apps/details?id=com.trackier.vistmarket');
+  final TextEditingController _androidRedirectController = TextEditingController(text: 'https://play.google.com/store/apps/details?id=com.apptrove.vistmarket');
   final TextEditingController _iosRedirectController = TextEditingController(text: 'https://www.example.com/ios');
-  final TextEditingController _desktopRedirectController = TextEditingController(text: 'https://trackier.com');
+  final TextEditingController _desktopRedirectController = TextEditingController(text: 'https://apptrove.com');
   final TextEditingController _productIdController = TextEditingController(text: 'chocochip');
   final TextEditingController _quantityController = TextEditingController(text: '2');
   final TextEditingController _channelController = TextEditingController(text: 'my_channel');
@@ -24,7 +24,7 @@ class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
   final TextEditingController _descriptionController = TextEditingController(text: 'Your Description');
   final TextEditingController _imageLinkController = TextEditingController(text: 'https://www.example.com/image.jpg');
   
-  final TextEditingController _resolveUrlController = TextEditingController(text: 'https://trackier58.u9ilnk.me/d/NKmWH9E7b1');
+  final TextEditingController _resolveUrlController = TextEditingController(text: 'https://apptrove58.u9ilnk.me/d/NKmWH9E7b1');
   
   String _dynamicLinkResult = '';
   String _resolveResult = '';
@@ -59,7 +59,7 @@ class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
     });
 
     try {
-      final url = await Trackierfluttersdk.createDynamicLink(
+      final url = await AppTroveFlutterSdk.createDynamicLink(
         templateId: _templateIdController.text,
         link: _linkController.text,
         domainUriPrefix: _domainUriPrefixController.text,
@@ -121,7 +121,7 @@ class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
     });
 
     try {
-      final resolvedUrl = await Trackierfluttersdk.resolveDeeplinkUrl(_resolveUrlController.text);
+      final resolvedUrl = await AppTroveFlutterSdk.resolveDeeplinkUrl(_resolveUrlController.text);
       
       setState(() {
         _resolveResult = '✅ SUCCESS\nResolved URL: $resolvedUrl';
@@ -216,8 +216,8 @@ class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
                     Text('Basic Parameters', style: TextStyle(fontWeight: FontWeight.bold)),
                     SizedBox(height: 8),
                     _buildTextField('Template ID', _templateIdController, 'wy23Px'),
-                    _buildTextField('Link', _linkController, 'https://trackier58.u9ilnk.me'),
-                    _buildTextField('Domain URI Prefix', _domainUriPrefixController, 'trackier58.u9ilnk.me'),
+                    _buildTextField('Link', _linkController, 'https://apptrove58.u9ilnk.me'),
+                    _buildTextField('Domain URI Prefix', _domainUriPrefixController, 'apptrove58.u9ilnk.me'),
                     _buildTextField('Deep Link Value', _deepLinkValueController, 'CakeActivity'),
                     
                     SizedBox(height: 16),
@@ -349,7 +349,7 @@ class _DynamicLinkScreenState extends State<DynamicLinkScreen> {
                     ),
                     SizedBox(height: 16),
                     
-                    _buildTextField('Deep Link URL', _resolveUrlController, 'https://trackier58.u9ilnk.me/d/NKmWH9E7b1'),
+                    _buildTextField('Deep Link URL', _resolveUrlController, 'https://apptrove58.u9ilnk.me/d/NKmWH9E7b1'),
                     
                     SizedBox(height: 16),
                     

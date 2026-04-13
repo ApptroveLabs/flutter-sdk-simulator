@@ -1,8 +1,6 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:trackier_sdk_flutter/trackierevent.dart';
-import 'package:trackier_sdk_flutter/trackierfluttersdk.dart';
-import 'dart:developer';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 
 class BuiltInEventsScreen extends StatefulWidget {
   @override
@@ -115,112 +113,112 @@ class _BuiltInEventsScreenState extends State<BuiltInEventsScreen> {
     }
 
     // Dynamically assign the event based on _selectedEvent
-    TrackierEvent trackierEvent;
+    AppTroveEvent apptroveEvent;
 
     switch (_selectedEvent) {
       case "ADD_TO_CART":
-        trackierEvent = TrackierEvent(TrackierEvent.ADD_TO_CART);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.ADD_TO_CART);
         break;
       case "LEVEL_ACHIEVED":
-        trackierEvent = TrackierEvent(TrackierEvent.LEVEL_ACHIEVED);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.LEVEL_ACHIEVED);
         break;
       case "ADD_TO_WISHLIST":
-        trackierEvent = TrackierEvent(TrackierEvent.ADD_TO_WISHLIST);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.ADD_TO_WISHLIST);
         break;
       case "COMPLETE_REGISTRATION":
-        trackierEvent = TrackierEvent(TrackierEvent.COMPLETE_REGISTRATION);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.COMPLETE_REGISTRATION);
         break;
       case "TUTORIAL_COMPLETION":
-        trackierEvent = TrackierEvent(TrackierEvent.TUTORIAL_COMPLETION);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.TUTORIAL_COMPLETION);
         break;
       case "PURCHASE":
-        trackierEvent = TrackierEvent(TrackierEvent.PURCHASE);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.PURCHASE);
         break;
       case "SUBSCRIBE":
-        trackierEvent = TrackierEvent(TrackierEvent.SUBSCRIBE);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.SUBSCRIBE);
         break;
       case "START_TRIAL":
-        trackierEvent = TrackierEvent(TrackierEvent.START_TRIAL);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.START_TRIAL);
         break;
       case "ACHIEVEMENT_UNLOCKED":
-        trackierEvent = TrackierEvent(TrackierEvent.ACHIEVEMENT_UNLOCKED);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.ACHIEVEMENT_UNLOCKED);
         break;
       case "CONTENT_VIEW":
-        trackierEvent = TrackierEvent(TrackierEvent.CONTENT_VIEW);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.CONTENT_VIEW);
         break;
       case "TRAVEL_BOOKING":
-        trackierEvent = TrackierEvent(TrackierEvent.TRAVEL_BOOKING);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.TRAVEL_BOOKING);
         break;
       case "SHARE":
-        trackierEvent = TrackierEvent(TrackierEvent.SHARE);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.SHARE);
         break;
       case "INVITE":
-        trackierEvent = TrackierEvent(TrackierEvent.INVITE);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.INVITE);
         break;
       case "LOGIN":
-        trackierEvent = TrackierEvent(TrackierEvent.LOGIN);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.LOGIN);
         break;
       case "UPDATE":
-        trackierEvent = TrackierEvent(TrackierEvent.UPDATE);
+        apptroveEvent = AppTroveEvent(AppTroveEvent.UPDATE);
         break;
       default:
-        trackierEvent = TrackierEvent(TrackierEvent.LOGIN); // Default to LOGIN if no event selected
+        apptroveEvent = AppTroveEvent(AppTroveEvent.LOGIN); // Default to LOGIN if no event selected
         break;
     }
 
     // Now set other event data like revenue and currency
-    trackierEvent.revenue = revenueValue;
-    trackierEvent.currency = currency;
-    trackierEvent.orderId = "324222233f33";
-    Trackierfluttersdk.setUserEmail("Satyam@Trackier.com");
-    Trackierfluttersdk.setUserId("###Uy_eeGu");
-    Trackierfluttersdk.setUserName("Satyam Jha");
-    Trackierfluttersdk.setUserPhone("8252786821");
-    Trackierfluttersdk.setGender(Gender.Male);
+    apptroveEvent.revenue = revenueValue;
+    apptroveEvent.currency = currency;
+    apptroveEvent.orderId = "324222233f33";
+    AppTroveFlutterSdk.setUserEmail("Satyam@Apptrove.com");
+    AppTroveFlutterSdk.setUserId("###Uy_eeGu");
+    AppTroveFlutterSdk.setUserName("Satyam Jha");
+    AppTroveFlutterSdk.setUserPhone("8252786821");
+    AppTroveFlutterSdk.setGender(Gender.Male);
     
     
 
     // Assign parameters dynamically using setEventValue
-    trackierEvent.setEventValue("Event Send","To Pannel");
+    apptroveEvent.setEventValue("Event Send","To Pannel");
 
     // Dynamically assign the values to param1, param2, ..., param10 based on user input
     for (int i = 0; i < paramValues.length; i++) {
       switch (i) {
         case 0:
-          trackierEvent.param1 = paramValues[i];
+          apptroveEvent.param1 = paramValues[i];
           break;
         case 1:
-          trackierEvent.param2 = paramValues[i];
+          apptroveEvent.param2 = paramValues[i];
           break;
         case 2:
-          trackierEvent.param3 = paramValues[i];
+          apptroveEvent.param3 = paramValues[i];
           break;
         case 3:
-          trackierEvent.param4 = paramValues[i];
+          apptroveEvent.param4 = paramValues[i];
           break;
         case 4:
-          trackierEvent.param5 = paramValues[i];
+          apptroveEvent.param5 = paramValues[i];
           break;
         case 5:
-          trackierEvent.param6 = paramValues[i];
+          apptroveEvent.param6 = paramValues[i];
           break;
         case 6:
-          trackierEvent.param7 = paramValues[i];
+          apptroveEvent.param7 = paramValues[i];
           break;
         case 7:
-          trackierEvent.param8 = paramValues[i];
+          apptroveEvent.param8 = paramValues[i];
           break;
         case 8:
-          trackierEvent.param9 = paramValues[i];
+          apptroveEvent.param9 = paramValues[i];
           break;
         case 9:
-          trackierEvent.param10 = paramValues[i];
+          apptroveEvent.param10 = paramValues[i];
           break;
       }
     }
 
     // Track the event
-    Trackierfluttersdk.trackEvent(trackierEvent);
+    AppTroveFlutterSdk.trackEvent(apptroveEvent);
 
     // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(

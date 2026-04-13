@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trackier_sdk_flutter/trackierevent.dart';
-import 'package:trackier_sdk_flutter/trackierfluttersdk.dart';
-import 'dart:developer';
-import 'AddtoCartScreen.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 
 
 class ProductPageScreen extends StatefulWidget {
@@ -15,19 +13,19 @@ class _ProductPageScreenState extends State<ProductPageScreen> {
   void initState() {
     super.initState();
     // Track product view event
-    TrackierEvent trackierEvent = TrackierEvent("jKw8qPF50u");
-    trackierEvent.param1="Product Viewed";
-    trackierEvent.orderId="Britania12123";
-    Trackierfluttersdk.trackEvent(trackierEvent);
+    AppTroveEvent apptroveEvent = AppTroveEvent("jKw8qPF50u");
+    apptroveEvent.param1="Product Viewed";
+    apptroveEvent.orderId="Britania12123";
+    AppTroveFlutterSdk.trackEvent(apptroveEvent);
 
   }
 
   void _addToCart() {
     // Track add to cart event
-    TrackierEvent trackierEvent = TrackierEvent("Fy4uC1_FlN");
-    trackierEvent.param1="Product Added to cart";
-    Trackierfluttersdk.trackEvent(trackierEvent);
-   // log("getPartner--${Trackierfluttersdk.getPartner()}");
+    AppTroveEvent apptroveEvent = AppTroveEvent("Fy4uC1_FlN");
+    apptroveEvent.param1="Product Added to cart";
+    AppTroveFlutterSdk.trackEvent(apptroveEvent);
+   // log("getPartner--${AppTroveFlutterSdk.getPartner()}");
 
     // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(
@@ -56,7 +54,7 @@ class _ProductPageScreenState extends State<ProductPageScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              'Image/trackierlogo.png', // Replace with your logo asset
+              'Image/apptrovelogo.png', // Replace with your logo asset
               width: double.infinity,
               fit: BoxFit.cover,
             ),

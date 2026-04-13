@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.trackier.vistmarket"
+    namespace = "com.apptrove.vistmarket"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

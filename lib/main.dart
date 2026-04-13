@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_simulator/Screens/HomeScreen.dart';
 import 'package:flutter_simulator/Screens/SplashScreen.dart';
-import 'package:trackier_sdk_flutter/trackierconfig.dart';
-import 'package:trackier_sdk_flutter/trackierfluttersdk.dart';
-import 'package:trackier_sdk_flutter/trackierevent.dart';
+import 'package:apptrove_sdk_flutter/apptroveconfig.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'apple_search_ads_helper.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,7 +18,7 @@ import 'Screens/BuildinEventScreen.dart';
 import 'Screens/CustomEventsScreen.dart';
 import 'Screens/DeepLinkScreen.dart';
 import 'Screens/ProductPageScreen.dart';
-import 'Screens/AddToCartScreen.dart';
+import 'Screens/AddtoCartScreen.dart';
 import 'Screens/CakeScreen.dart';
 import 'Screens/DynamicLinkScreen.dart';
 import 'Screens/CampaignDataScreen.dart';
@@ -54,11 +54,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Vist Market',
+      debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        fontFamily: 'Roboto',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.indigoAccent,
+          primary: Colors.indigoAccent,
+          secondary: Colors.purple,
+          brightness: Brightness.light,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.indigoAccent,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: false,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.indigoAccent,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          ),
+        ),
+        cardTheme: CardThemeData(
+          elevation: 3,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        ),
+        snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
       ),
       initialRoute: '/',
       home: SplashScreen(),
@@ -184,7 +212,7 @@ void _initializeSDKs() async {
     // final secretId = dotenv.env['SECRET_ID'] ?? "default_value";
     // final secretKey = dotenv.env['SECRET_KEY'] ?? "default_value";
 
-    final trackerSDKConfig = TrackerSDKConfig(trDevKey, "development");
+    final trackerSDKConfig = AppTroveSDKConfig(trDevKey, "development");
 
     // trackerSDKConfig.setFacebookAppId("234234"); // Only for android Users Read docs for details
 
@@ -192,13 +220,13 @@ void _initializeSDKs() async {
 
     trackerSDKConfig.setAppId("gppNtor2hH"); // Get from Panel
     trackerSDKConfig.setEncryptionKey("zbWpNbF2epK1TUltzfKIlUTleaXqraEG+glgpnwiEN8="); // Get from Panel
-    trackerSDKConfig.setEncryptionType(TrackierEncryptionType.AES_GCM);
+    trackerSDKConfig.setEncryptionType(AppTroveEncryptionType.AES_GCM);
 
     // Set user details
-    Trackierfluttersdk.setUserId("009013452535353");
-    Trackierfluttersdk.setUserEmail("sanu@gmail.com");
-    Trackierfluttersdk.setUserName("SanuTest");
-    Trackierfluttersdk.setUserPhone("8130300721");
+    AppTroveFlutterSdk.setUserId("009013452535353");
+    AppTroveFlutterSdk.setUserEmail("sanu@gmail.com");
+    AppTroveFlutterSdk.setUserName("SanuTest");
+    AppTroveFlutterSdk.setUserPhone("8130300721");
 
     // Set app secrets
     // trackerSDKConfig.setAppSecret(secretId,secretKey);
@@ -206,8 +234,9 @@ void _initializeSDKs() async {
 
 
     // Deferred Deep Link Callback - Must be set BEFORE SDK initialization
-    trackerSDKConfig.deferredDeeplinkCallback = (uri) {
-      print('The value of deeplinkUrl is: $uri');
+    trackerSDKConfig.deferredDeeplinkCallback = (deepLinkObj) {
+      final String? urlString = deepLinkObj.url;
+      print('The value of deeplinkUrl is: $urlString');
       
       // Prevent multiple navigation attempts
       if (_hasNavigatedFromDeepLink) {
@@ -218,9 +247,9 @@ void _initializeSDKs() async {
 
 
       // Parse the resolved deep link and extract parameters
-      if (uri != null && uri.isNotEmpty) {
+      if (urlString != null && urlString.isNotEmpty) {
         try {
-          final Uri resolvedUri = Uri.parse(uri);
+          final Uri resolvedUri = Uri.parse(urlString);
           final String? dlv = resolvedUri.queryParameters['dlv'];
           final String? cakename = resolvedUri.queryParameters['cakename'];
           final String? price = resolvedUri.queryParameters['price'];
@@ -238,7 +267,7 @@ void _initializeSDKs() async {
             // Navigate to appropriate screen based on deep link parameters
             // Add a small delay to ensure the app is fully loaded
             Future.delayed(Duration(milliseconds: 1000), () {
-              _navigateFromDeferredDeepLink(uri);
+              _navigateFromDeferredDeepLink(urlString);
             });
           } else {
             print('No valid dlv parameter found, skipping navigation');
@@ -265,7 +294,7 @@ void _initializeSDKs() async {
           final token = await AppleSearchAdsHelper.getAttributionToken();
           if (token != null && token.isNotEmpty) {
             print('Apple Ads Token received: $token');
-            Trackierfluttersdk.updateAppleAdsToken(token);
+            AppTroveFlutterSdk.updateAppleAdsToken(token);
             print("Apple Ads Token updated successfully.");
           } else {
             print('Apple Ads Token is empty or null');
@@ -281,11 +310,11 @@ void _initializeSDKs() async {
       print("Not iOS platform, skipping Apple Ads token retrieval");
     }
 
-    Trackierfluttersdk.waitForATTUserAuthorization(10);
+    AppTroveFlutterSdk.waitForATTUserAuthorization(10);
 
-    // Initialize Trackier SDK
-    Trackierfluttersdk.initializeSDK(trackerSDKConfig);
-    print("Trackier SDK initialized successfully.");
+    // Initialize Apptrove SDK
+    AppTroveFlutterSdk.initializeSDK(trackerSDKConfig);
+    print("Apptrove SDK initialized successfully.");
 
     // Initialize deep link listener after SDK is initialized
     _initDeepLinkListener();
@@ -296,30 +325,30 @@ void _initializeSDKs() async {
       await _getAndSendApnsToken();
     }
 
-    // Set Trackier ID as Firebase user property for uninstall tracking
-    await _setTrackierUserProperty();
+    // Set Apptrove ID as Firebase user property for uninstall tracking
+    await _setApptroveUserProperty();
 
     // Trigger app open event after SDK initialization this is completed event parameter for demo
     _trackAppOpen();
   } catch (e) {
-    print("Error initializing Trackier SDK: $e");
+    print("Error initializing Apptrove SDK: $e");
   }
 }
 
 // Initialize deep link listener after SDK is initialized
-// Listen for incoming URLs and send to Trackier SDK
+// Listen for incoming URLs and send to Apptrove SDK
 void _initDeepLinkListener() {
   // final appLinks = AppLinks();
   //
-  // // Listen for incoming links and send to Trackier SDK
+  // // Listen for incoming links and send to Apptrove SDK
   // appLinks.uriLinkStream.listen((Uri? uri) {
   //   if (uri != null) {
   //     print('Applink incoming url: ${uri.toString()}');
-  //     Trackierfluttersdk.parseDeeplink(uri.toString());
+  //     AppTroveFlutterSdk.parseDeeplink(uri.toString());
   //   }else{
   //     // Subscribe to attribution link for deferred deep links (iOS only)
   //     if (Platform.isIOS) {
-  //       Trackierfluttersdk.subscribeAttributionlink();
+  //       AppTroveFlutterSdk.subscribeAttributionlink();
   //     }
   //   }
   // }, onError: (err) {
@@ -331,7 +360,7 @@ void _initDeepLinkListener() {
   // Parse deep link before SDK initialization for test send the test url or get the link from app launch and send to parsedeeplink function
   // const String testDeepLink = 'https://superliving.u9ilnk.me/d/iOhRy6hQMG';
   // print('Parsing deep link after SDK initialization: $testDeepLink');
-  // Trackierfluttersdk.parseDeeplink(testDeepLink);
+  // AppTroveFlutterSdk.parseDeeplink(testDeepLink);
 }
 
 
@@ -340,8 +369,8 @@ void _trackAppOpen() {
   try {
 
     // Create event with COMPLETE_REGISTRATION ID (String) or Custom Event ID
-    TrackierEvent event = TrackierEvent(TrackierEvent.COMPLETE_REGISTRATION);
-    // Alternatively: TrackierEvent event = TrackierEvent("w43424"); // Pass your Custom Event ID
+    AppTroveEvent event = AppTroveEvent(AppTroveEvent.COMPLETE_REGISTRATION);
+    // Alternatively: AppTroveEvent event = AppTroveEvent("w43424"); // Pass your Custom Event ID
 
     // Built-in fields for event tracking
     event.orderId = "REG_001";         // String: Unique registration ID
@@ -368,15 +397,15 @@ void _trackAppOpen() {
     event.setEventValue("signup_time", 1631234567890); // int: Timestamp
     event.setEventValue("device", "Flutter");           // String: Device type
 
-    // Set user details in Trackier SDK
-    Trackierfluttersdk.setUserId("USER123");              // String: User ID
-    Trackierfluttersdk.setUserEmail("user@example.com");  // String: User email
-    Trackierfluttersdk.setUserName("Jane Doe");           // String: User name
-    Trackierfluttersdk.setUserPhone("+1234567890");       // String: User phone
-    Trackierfluttersdk.setDOB("1990-01-01");              // String: Date of birth (YYYY-MM-DD)
-    Trackierfluttersdk.setGender(Gender.Male);            // Gender: Male, Female, or Others
-    Trackierfluttersdk.setIMEI("123456789012345", "987654321098765"); // String, String: Device IMEI
-    Trackierfluttersdk.setMacAddress("00:1A:2B:3C:4D:5E"); // String: Device MAC address
+    // Set user details in Apptrove SDK
+    AppTroveFlutterSdk.setUserId("USER123");              // String: User ID
+    AppTroveFlutterSdk.setUserEmail("user@example.com");  // String: User email
+    AppTroveFlutterSdk.setUserName("Jane Doe");           // String: User name
+    AppTroveFlutterSdk.setUserPhone("+1234567890");       // String: User phone
+    AppTroveFlutterSdk.setDOB("1990-01-01");              // String: Date of birth (YYYY-MM-DD)
+    AppTroveFlutterSdk.setGender(Gender.Male);            // Gender: Male, Female, or Others
+    AppTroveFlutterSdk.setIMEI("123456789012345", "987654321098765"); // String, String: Device IMEI
+    AppTroveFlutterSdk.setMacAddress("00:1A:2B:3C:4D:5E"); // String: Device MAC address
 
     //Passing the custom params in events be like below example
     var eventCustomParams = Map<String, Object>();
@@ -391,31 +420,31 @@ void _trackAppOpen() {
       "AppVersion": "1.0.0",
     };
 
-    Trackierfluttersdk.setUserAdditonalDetail(userDetails);
+    AppTroveFlutterSdk.setUserAdditionalDetails(userDetails);
 
     // Send the event to Apptrove
-    Trackierfluttersdk.trackEvent(event);
+    AppTroveFlutterSdk.trackEvent(event);
     print("App open event tracked successfully.");
   } catch (error) {
     print("Error tracking app open event: $error");
   }
 }
 
-/// Set Trackier ID as Firebase user property for uninstall tracking Through Firebase Analytics
-Future<void> _setTrackierUserProperty() async {
+/// Set Apptrove ID as Firebase user property for uninstall tracking Through Firebase Analytics
+Future<void> _setApptroveUserProperty() async {
   try {
-    print("Setting Trackier ID as Firebase user property...");
+    print("Setting Apptrove ID as Firebase user property...");
     final analytics = FirebaseAnalytics.instance;
-    final trackierId = await Trackierfluttersdk.getTrackierId();
+    final apptroveId = await AppTroveFlutterSdk.getAppTroveId();
 
-    if (trackierId.isNotEmpty) {
-      await analytics.setUserProperty(name: "ct_objectId", value: trackierId);
-      print("Trackier ID set as Firebase user property: $trackierId");
+    if (apptroveId.isNotEmpty) {
+      await analytics.setUserProperty(name: "ct_objectId", value: apptroveId);
+      print("Apptrove ID set as Firebase user property: $apptroveId");
     } else {
-      print("Trackier ID is null or empty, skipping Firebase user property");
+      print("Apptrove ID is null or empty, skipping Firebase user property");
     }
   } catch (error) {
-    print("Error setting Trackier user property: $error");
+    print("Error setting Apptrove user property: $error");
     // Continue execution even if Firebase user property fails
   }
 }
@@ -424,10 +453,10 @@ Future<void> _setTrackierUserProperty() async {
 Future<void> _initializeFCM() async {
   try {
 
-    // Listen for token refresh and send to Trackier SDK For Uninstall trackier through FCM
+    // Listen for token refresh and send to Apptrove SDK For Uninstall apptrove through FCM
     FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
       print('FCM Token refreshed: $token');
-      Trackierfluttersdk.sendFcmToken(token);
+      AppTroveFlutterSdk.sendFcmToken(token);
     });
   } catch (e) {
     print('Error initializing FCM: $e');
@@ -436,7 +465,7 @@ Future<void> _initializeFCM() async {
 
 
 /// Get and send APNs token for iOS - with retry logic
-/// Requests notification permissions and retrieves APNs token, then sends to Trackier SDK
+/// Requests notification permissions and retrieves APNs token, then sends to Apptrove SDK
 Future<void> _getAndSendApnsToken() async {
   if (!Platform.isIOS) {
     print('Not iOS platform, skipping APNs token retrieval');
@@ -485,8 +514,8 @@ Future<void> _getAndSendApnsToken() async {
 
     if (apnsToken != null && apnsToken.isNotEmpty) {
       print('Raw APNs Token: $apnsToken');
-      Trackierfluttersdk.sendAPNToken(apnsToken);
-      print('APNs Token sent to Trackier successfully');
+      AppTroveFlutterSdk.sendAPNToken(apnsToken);
+      print('APNs Token sent to Apptrove successfully');
     } else {
       print('Failed to get APNs token after $maxRetries retries (common on simulator; test on device)');
     }

@@ -1,5 +1,5 @@
 
-package com.trackier.vistmarket
+package com.apptrove.vistmarket
 
 import android.content.Intent
 import android.net.Uri

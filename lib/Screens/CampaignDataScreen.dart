@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trackier_sdk_flutter/trackierfluttersdk.dart';
-import 'package:trackier_sdk_flutter/trackierevent.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 
 class CampaignDataScreen extends StatefulWidget {
   @override
@@ -31,24 +31,24 @@ class _CampaignDataScreenState extends State<CampaignDataScreen> {
       print("Getting campaign data...");
       
       // Retrieve all campaign data asynchronously
-      final ad = await Trackierfluttersdk.getAd();
-      final adID = await Trackierfluttersdk.getAdID();
-      final campaign = await Trackierfluttersdk.getCampaign();
-      final campaignID = await Trackierfluttersdk.getCampaignID();
-      final adSet = await Trackierfluttersdk.getAdSet();
-      final adSetID = await Trackierfluttersdk.getAdSetID();
-      // final channel = await Trackierfluttersdk.getChannel(); // Method not available
-      final clickId = await Trackierfluttersdk.getClickId();
-      final pid = await Trackierfluttersdk.getPid();
-      final dlv = await Trackierfluttersdk.getDlv();
-      final isRetargeting = await Trackierfluttersdk.getIsRetargeting();
+      final ad = await AppTroveFlutterSdk.getAd();
+      final adID = await AppTroveFlutterSdk.getAdID();
+      final campaign = await AppTroveFlutterSdk.getCampaign();
+      final campaignID = await AppTroveFlutterSdk.getCampaignID();
+      final adSet = await AppTroveFlutterSdk.getAdSet();
+      final adSetID = await AppTroveFlutterSdk.getAdSetID();
+      // final channel = await AppTroveFlutterSdk.getChannel(); // Method not available
+      final clickId = await AppTroveFlutterSdk.getClickId();
+      final pid = await AppTroveFlutterSdk.getPid();
+      final dlv = await AppTroveFlutterSdk.getDlv();
+      final isRetargeting = await AppTroveFlutterSdk.getIsRetargeting();
       
       // Get custom parameters P1-P5
-      final p1 = await Trackierfluttersdk.getP1();
-      final p2 = await Trackierfluttersdk.getP2();
-      final p3 = await Trackierfluttersdk.getP3();
-      final p4 = await Trackierfluttersdk.getP4();
-      final p5 = await Trackierfluttersdk.getP5();
+      final p1 = await AppTroveFlutterSdk.getP1();
+      final p2 = await AppTroveFlutterSdk.getP2();
+      final p3 = await AppTroveFlutterSdk.getP3();
+      final p4 = await AppTroveFlutterSdk.getP4();
+      final p5 = await AppTroveFlutterSdk.getP5();
 
       setState(() {
         _campaignData = {
@@ -113,10 +113,10 @@ class _CampaignDataScreenState extends State<CampaignDataScreen> {
       print("Tracking event with campaign data...");
       
       // Create event with the specified event ID
-      TrackierEvent trackierEvent = TrackierEvent(_eventIdController.text.trim());
+      AppTroveEvent apptroveEvent = AppTroveEvent(_eventIdController.text.trim());
       
       // Track the event (campaign data is automatically associated)
-      Trackierfluttersdk.trackEvent(trackierEvent);
+      AppTroveFlutterSdk.trackEvent(apptroveEvent);
       
       setState(() {
         _trackEventResult = ' SUCCESS\nEvent "${_eventIdController.text.trim()}" tracked successfully with campaign data!';

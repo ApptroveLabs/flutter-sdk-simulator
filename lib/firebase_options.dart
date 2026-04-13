@@ -61,9 +61,9 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyDummyKeyForTesting123456789012345',
     appId: '1:123456789:ios:abcdef1234567890abcdef',
     messagingSenderId: '123456789',
-    projectId: 'trackier-vistmarket',
-    storageBucket: 'trackier-vistmarket.appspot.com',
-    iosBundleId: 'com.trackier.vistmarket',
+    projectId: 'apptrove-vistmarket',
+    storageBucket: 'apptrove-vistmarket.appspot.com',
+    iosBundleId: 'com.apptrove.vistmarket',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: 'your-messaging-sender-id',
     projectId: 'your-project-id',
     storageBucket: 'your-project-id.appspot.com',
-    iosBundleId: 'com.trackier.vistmarket',
+    iosBundleId: 'com.apptrove.vistmarket',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
