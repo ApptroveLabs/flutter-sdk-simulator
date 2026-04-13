@@ -66,9 +66,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.indigoAccent,
           primary: Colors.indigoAccent,
-          secondary: Colors.purple,
+          surface: Colors.white,
           brightness: Brightness.light,
         ),
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.indigoAccent,
           foregroundColor: Colors.white,
@@ -232,10 +233,10 @@ void _initializeSDKs() async {
     // trackerSDKConfig.setFacebookAppId("234234"); // Only for android Users Read docs for details
 
     // Use this for secure Install and event Body
-
-    trackerSDKConfig.setAppId("gppNtor2hH"); // Get from Panel
-    trackerSDKConfig.setEncryptionKey("zbWpNbF2epK1TUltzfKIlUTleaXqraEG+glgpnwiEN8="); // Get from Panel
-    trackerSDKConfig.setEncryptionType(AppTroveEncryptionType.AES_GCM);
+    //
+    // trackerSDKConfig.setAppId("gppNtor2hH"); // Get from Panel
+    // trackerSDKConfig.setEncryptionKey("zbWpNbF2epK1TUltzfKIlUTleaXqraEG+glgpnwiEN8="); // Get from Panel
+    // trackerSDKConfig.setEncryptionType(AppTroveEncryptionType.AES_GCM);
 
     // Set user details
     AppTroveFlutterSdk.setUserId("009013452535353");

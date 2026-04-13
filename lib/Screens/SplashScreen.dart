@@ -83,13 +83,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.indigo.shade900, Colors.indigoAccent, Colors.purple.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Colors.indigoAccent,
         child: Center(
           child: AnimatedBuilder(
             animation: _animController,
@@ -101,26 +95,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(28),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white30, width: 2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 30,
-                              offset: Offset(0, 15),
-                            )
-                          ],
-                        ),
-                        child: SvgPicture.asset(
-                          'Image/flutmarket_icon_logo.svg',
-                          height: 80,
-                          width: 80,
-                          colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                        ),
+                      SvgPicture.asset(
+                        'Image/flutmarket_icon_logo.svg',
+                        height: 120,
+                        width: 120,
                       ),
                       SizedBox(height: 35),
                       Text(

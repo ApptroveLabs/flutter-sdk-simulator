@@ -106,25 +106,16 @@ class _EventsTrackingScreenState extends State<EventsTrackingScreen> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.indigoAccent, Colors.indigo.shade800],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: Colors.indigoAccent,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 35,
-                    backgroundColor: Colors.white,
-                    child: SvgPicture.asset(
-                      'Image/flutmarket_icon_logo.svg',
-                      height: 45,
-                      width: 45,
-                      colorFilter: ColorFilter.mode(Colors.indigoAccent, BlendMode.srcIn),
-                    ),
+                  SvgPicture.asset(
+                    'Image/flutmarket_icon_logo.svg',
+                    height: 70,
+                    width: 70,
                   ),
                   SizedBox(height: 12),
                   GestureDetector(
@@ -550,7 +541,6 @@ We ensure your data is encrypted during transmission. You can request data delet
               'Image/flutmarket_icon_logo.svg',
               height: 24,
               width: 24,
-              colorFilter: ColorFilter.mode(Colors.indigoAccent, BlendMode.srcIn),
             ),
             SizedBox(width: 10),
             Text('About Flutmarket', style: TextStyle(fontWeight: FontWeight.bold)),

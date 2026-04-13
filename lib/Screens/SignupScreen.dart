@@ -54,18 +54,10 @@ class _SignupScreenState extends State<SignupScreen> {
             children: [
               SizedBox(height: 40),
               Center(
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.indigoAccent.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: SvgPicture.asset(
-                    'Image/flutmarket_icon_logo.svg',
-                    height: 80,
-                    width: 80,
-                    colorFilter: ColorFilter.mode(Colors.indigoAccent, BlendMode.srcIn),
-                  ),
+                child: SvgPicture.asset(
+                  'Image/flutmarket_icon_logo.svg',
+                  height: 120,
+                  width: 120,
                 ),
               ),
               SizedBox(height: 20),
