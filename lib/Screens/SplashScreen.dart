@@ -15,8 +15,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
-  // Simulating first launch — in real apps, use shared_preferences
-  bool _isFirstLaunch = true;
 
   @override
   void initState() {
@@ -42,13 +40,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         final prefs = await SharedPreferences.getInstance();
         final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
+        final bool onboardingSeen = prefs.getBool('onboardingSeen') ?? false;
+
         if (isLoggedIn) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => EventsTrackingScreen()),
           );
         } else {
-          if (_isFirstLaunch) {
+          if (!onboardingSeen) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

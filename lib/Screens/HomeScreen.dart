@@ -10,6 +10,7 @@ import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../Utils/DeveloperTools.dart';
+import '../Utils/CartManager.dart';
 
 class EventsTrackingScreen extends StatefulWidget {
   @override
@@ -93,7 +94,11 @@ class _EventsTrackingScreenState extends State<EventsTrackingScreen> {
                   padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
                   constraints: BoxConstraints(minWidth: 14, minHeight: 14),
-                  child: Text('2', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                  child: Text(
+                    CartManager().totalItems.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               )
             ],
@@ -484,14 +489,27 @@ We ensure your data is encrypted during transmission. You can request data delet
                                                 fontSize: 16,
                                               ),
                                             ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.indigoAccent,
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              padding: EdgeInsets.all(4),
-                                              child: Icon(Icons.add_shopping_cart, color: Colors.white, size: 16),
-                                            )
+                                             GestureDetector(
+                                               onTap: () {
+                                                 setState(() {
+                                                   CartManager().addItem(product);
+                                                 });
+                                                 ScaffoldMessenger.of(context).showSnackBar(
+                                                   SnackBar(
+                                                     content: Text('${product.name} added to cart'),
+                                                     duration: Duration(seconds: 1),
+                                                   ),
+                                                 );
+                                               },
+                                               child: Container(
+                                                 decoration: BoxDecoration(
+                                                   color: Colors.indigoAccent,
+                                                   borderRadius: BorderRadius.circular(8),
+                                                 ),
+                                                 padding: EdgeInsets.all(4),
+                                                 child: Icon(Icons.add_shopping_cart, color: Colors.white, size: 16),
+                                               ),
+                                             )
                                           ],
                                         )
                                       ],

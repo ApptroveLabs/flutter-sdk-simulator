@@ -3,6 +3,7 @@ import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import '../Models/Product.dart';
 import 'OrderConfirmationScreen.dart';
+import '../Utils/CartManager.dart';
 
 class CartItem {
   final Product product;
@@ -19,11 +20,7 @@ class AddToCartScreen extends StatefulWidget {
 }
 
 class _AddToCartScreenState extends State<AddToCartScreen> {
-  List<CartItem> cartItems = [
-    CartItem(product: PreloadedProducts.products[0], quantity: 1),
-    CartItem(product: PreloadedProducts.products[3], quantity: 2),
-    CartItem(product: PreloadedProducts.products[8], quantity: 1),
-  ];
+  List<CartItem> cartItems = CartManager().items;
 
   double get subtotal => cartItems.fold(0, (sum, item) => sum + item.subtotal);
   double get shipping => subtotal > 500 ? 0 : 9.99;
@@ -37,6 +34,8 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
     appTroveEvent.param1 = "Cart Purchase";
     appTroveEvent.param2 = cartItems.length.toString();
     AppTroveFlutterSdk.trackEvent(appTroveEvent);
+
+    CartManager().clear();
 
     Navigator.pushReplacement(
       context,
@@ -99,7 +98,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                             Expanded(
                               child: Text(
                                 subtotal > 500
-                                    ? "🎉 You got FREE shipping!"
+                                    ? "You got FREE shipping!"
                                     : "Spend \$${(500 - subtotal).toStringAsFixed(0)} more for FREE shipping!",
                                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                               ),
@@ -164,7 +163,11 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                                   children: [
                                     IconButton(
                                       icon: Icon(Icons.delete_outline, color: Colors.red.shade400, size: 22),
-                                      onPressed: () => setState(() => cartItems.removeAt(index)),
+                                      onPressed: () {
+                                        setState(() {
+                                          CartManager().removeItem(index);
+                                        });
+                                      },
                                     ),
                                     Container(
                                       decoration: BoxDecoration(

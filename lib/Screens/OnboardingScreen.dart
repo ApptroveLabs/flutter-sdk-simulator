@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onComplete;
@@ -14,27 +16,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final pages = [
     {
-      'icon': Icons.storefront,
-      'title': 'Thousands of Products',
-      'subtitle': 'Shop from our curated collection of premium products across all categories.',
-      'color1': Colors.indigoAccent,
-      'color2': Colors.purple,
+      'icon': Icons.shopping_bag_outlined,
+      'title': 'Discover Products',
+      'subtitle': 'Explore thousands of premium products at your fingertips.',
     },
     {
       'icon': Icons.local_shipping_outlined,
-      'title': 'Fast & Free Delivery',
-      'subtitle': 'Get your orders delivered in 3-5 business days. Free shipping on orders over \$500.',
-      'color1': Colors.teal,
-      'color2': Colors.green,
+      'title': 'Fast Delivery',
+      'subtitle': 'Enjoy lightning-fast shipping right to your doorstep.',
     },
     {
-      'icon': Icons.security_outlined,
-      'title': 'Safe & Secure Payments',
-      'subtitle': 'Shop with confidence. All transactions are encrypted and 100% secure.',
-      'color1': Colors.orange,
-      'color2': Colors.deepOrange,
+      'icon': Icons.support_agent_outlined,
+      'title': 'Expert Support',
+      'subtitle': 'Our customer support team is available 24/7 to help you.',
     },
   ];
+
+  Future<void> _completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboardingSeen', true);
+    widget.onComplete();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,54 +50,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             itemBuilder: (context, index) {
               final page = pages[index];
               return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      (page['color1'] as Color).withOpacity(0.15),
-                      Colors.white,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
+                color: Colors.white,
                 child: SafeArea(
                   child: Column(
                     children: [
-                      SizedBox(height: 80),
-                      Container(
-                        width: 180,
-                        height: 180,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [page['color1'] as Color, page['color2'] as Color],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: (page['color1'] as Color).withOpacity(0.3),
-                              blurRadius: 30,
-                              offset: Offset(0, 15),
-                            ),
-                          ],
-                        ),
-                        child: Icon(page['icon'] as IconData, color: Colors.white, size: 90),
+                      SizedBox(height: 100),
+                      Icon(
+                        page['icon'] as IconData,
+                        size: 150,
+                        color: Colors.indigoAccent,
                       ),
-                      SizedBox(height: 70),
+                      SizedBox(height: 80),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Column(
                           children: [
                             Text(
                               page['title'] as String,
-                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900, color: Colors.black87),
+                              style: GoogleFonts.poppins(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.indigo.shade900,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                             SizedBox(height: 20),
                             Text(
                               page['subtitle'] as String,
-                              style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.6),
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.grey[700],
+                                height: 1.5,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -140,7 +126,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         if (_currentPage < pages.length - 1) {
                           _controller.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeOut);
                         } else {
-                          widget.onComplete();
+                          _completeOnboarding();
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -159,7 +145,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   SizedBox(height: 15),
                   if (_currentPage < pages.length - 1)
                     TextButton(
-                      onPressed: widget.onComplete,
+                      onPressed: _completeOnboarding,
                       child: Text("Skip", style: TextStyle(color: Colors.grey[600], fontSize: 16)),
                     ),
                 ],

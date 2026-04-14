@@ -4,6 +4,8 @@ import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Models/Product.dart';
+import '../Utils/CartManager.dart';
+import 'AddtoCartScreen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -41,6 +43,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     appTroveEvent.currency = "USD";
     appTroveEvent.param4 = selectedSize; 
     AppTroveFlutterSdk.trackEvent(appTroveEvent);
+
+    CartManager().addItem(widget.product);
 
     showModalBottomSheet(
       context: context,
