@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- App Link -->
                 <data
-                    android:host="apptrove58.u9ilnk.me"
+                    android:host="trackier58.u9ilnk.me"
                     android:pathPrefix="/d"
                     android:scheme="https" />
             </intent-filter>

@@ -119,8 +119,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       // Create dynamic link using Apptrove SDK
       final dynamicLink = await AppTroveFlutterSdk.createDynamicLink(
         templateId: 'wy23Px',
-        link: 'https://apptrove58.u9ilnk.me',
-        domainUriPrefix: 'apptrove58.u9ilnk.me',
+        link: 'https://trackier58.u9ilnk.me',
+        domainUriPrefix: 'trackier58.u9ilnk.me',
         deepLinkValue: 'ProductDetail',
         sdkParameters: {
           'product_id': widget.product.id.toString(),

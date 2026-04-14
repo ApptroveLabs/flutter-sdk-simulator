@@ -161,7 +161,7 @@ class _EventsTrackingScreenState extends State<EventsTrackingScreen> {
               title: Text('Share Flutmarket', style: TextStyle(fontSize: 16)),
               onTap: () {
                 Navigator.pop(context);
-                Share.share('Check out Flutmarket! The best premium shopping app.\nDownload now: https://flutmarket.page.link/download');
+                Share.share('Check out Flutmarket! The best premium shopping app.\nDownload now: https://trackier58.u9ilnk.me/download');
               },
             ),
             Divider(),
@@ -425,8 +425,8 @@ We ensure your data is encrypted during transmission. You can request data delet
                                                 try {
                                                   final dynamicLink = await AppTroveFlutterSdk.createDynamicLink(
                                                     templateId: 'wy23Px',
-                                                    link: 'https://apptrove58.u9ilnk.me',
-                                                    domainUriPrefix: 'apptrove58.u9ilnk.me',
+                                                    link: 'https://trackier58.u9ilnk.me',
+                                                    domainUriPrefix: 'trackier58.u9ilnk.me',
                                                     deepLinkValue: 'ProductDetail',
                                                     sdkParameters: {
                                                       'product_id': product.id.toString(),
