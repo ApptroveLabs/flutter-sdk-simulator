@@ -69,6 +69,17 @@
 -keep class com.clevertap.** { *; }
 -dontwarn com.clevertap.**
 
-# WebEngage ProGuard Rules (if using WebEngage)
--keep class com.webengage.** { *; }
--dontwarn com.webengage.**
+# AppTrove SDK ProGuard Rules
+-keep class com.trackier.apptrove.** { *; }
+
+# Google Play Core ProGuard Rules
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
+
+# Additional General Rules
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod,InnerClasses

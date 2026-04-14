@@ -129,7 +129,7 @@ class _EventsTrackingScreenState extends State<EventsTrackingScreen> {
                     },
                     child: Text(
                       'Sign In / Register',
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
