@@ -128,6 +128,37 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              SizedBox(height: 15),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('isLoggedIn', true);
+                    AppTroveFlutterSdk.setUserId("guest_user");
+                    AppTroveFlutterSdk.setUserName("Guest User");
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventsTrackingScreen()),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 18),
+                    side: BorderSide(color: Colors.indigoAccent),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  child: Text(
+                    "Continue as Guest",
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.indigoAccent,
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
