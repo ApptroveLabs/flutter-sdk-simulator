@@ -16,6 +16,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 import 'Screens/BuildinEventScreen.dart';
 import 'Screens/CustomEventsScreen.dart';
@@ -46,7 +47,11 @@ void main() async {
   runApp(MyApp());
   
   // Initialize SDKs after the app is running
-  WidgetsBinding.instance.addPostFrameCallback((_) {
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    // Show App Tracking Transparency prompt on iOS
+    if (Platform.isIOS) {
+      await AppTrackingTransparency.requestTrackingAuthorization();
+    }
     _initializeSDKs();
   });
 }

@@ -2,6 +2,8 @@ PODS:
   - Alamofire (5.9.1)
   - app_links (6.4.1):
     - Flutter
+  - app_tracking_transparency (0.0.1):
+    - Flutter
   - apptrove-ios-sdk (2.0.1):
     - Alamofire (~> 5.9.0)
     - CryptoSwift (~> 1.4.1)
@@ -157,6 +159,7 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
   - apptrove_sdk_flutter (from `.symlinks/plugins/apptrove_sdk_flutter/ios`)
   - clevertap_plugin (from `.symlinks/plugins/clevertap_plugin/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -192,6 +195,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
+  app_tracking_transparency:
+    :path: ".symlinks/plugins/app_tracking_transparency/ios"
   apptrove_sdk_flutter:
     :path: ".symlinks/plugins/apptrove_sdk_flutter/ios"
   clevertap_plugin:
@@ -216,6 +221,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   app_links: 3dbc685f76b1693c66a6d9dd1e9ab6f73d97dc0a
+  app_tracking_transparency: 3d84f147f67ca82d3c15355c36b1fa6b66ca7c92
   apptrove-ios-sdk: d9d20470bcf8fe31b91c6d593dc15593ac906c5d
   apptrove_sdk_flutter: 86e1590c41005ca3d9284f9af52d3856b412d4de
   CleverTap-iOS-SDK: 35aaa0ef8adf00b3b2099953c0aba3cde5a554fc
