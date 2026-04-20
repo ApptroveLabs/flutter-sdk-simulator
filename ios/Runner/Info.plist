@@ -51,5 +51,7 @@
 	<string>This app requires access to your location to provide accurate shipping estimates and fraud prevention during the checkout process.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app requires access to your location to provide personalized offers and secure attribution tracking based on your region.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

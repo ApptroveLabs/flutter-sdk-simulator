@@ -22,6 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
         _passwordController.text.isNotEmpty) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userEmail', _emailController.text);
       
       Navigator.pushReplacement(
         context,
