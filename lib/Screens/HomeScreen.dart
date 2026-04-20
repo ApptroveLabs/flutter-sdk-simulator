@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../Utils/DeveloperTools.dart';
 import '../Utils/CartManager.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 
 class EventsTrackingScreen extends StatefulWidget {
   @override
@@ -236,8 +237,16 @@ We ensure your data is encrypted during transmission. You can request data delet
               onTap: () async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('isLoggedIn', false);
+                await prefs.remove('userEmail');
                 Navigator.pop(context);
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.delete_forever_outlined, color: Colors.red[900], size: 28),
+              title: Text('Delete Account', style: TextStyle(color: Colors.red[900], fontSize: 16, fontWeight: FontWeight.bold)),
+              onTap: () {
+                _showDeleteAccountConfirmation(context);
               },
             ),
           ],
@@ -614,6 +623,48 @@ We ensure your data is encrypted during transmission. You can request data delet
           ),
         ],
       )
+    );
+  }
+
+  void _showDeleteAccountConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete Account?', style: TextStyle(color: Colors.red[900])),
+        content: Text('This action is permanent. All your order history and preferences will be permanently removed from our servers.'),
+        actions: [
+          TextButton(
+            child: Text('Cancel', style: TextStyle(color: Colors.grey)),
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900]),
+            child: Text('Permanently Delete', style: TextStyle(color: Colors.white)),
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              
+              // Fire SDK Event for Deletion
+              AppTroveEvent delEvent = AppTroveEvent("account_deleted");
+              delEvent.param1 = prefs.getString('userEmail') ?? 'unknown';
+              AppTroveFlutterSdk.trackEvent(delEvent);
+
+              // Clear all local data
+              await prefs.clear();
+              
+              Navigator.pop(ctx);
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context, 
+                MaterialPageRoute(builder: (context) => LoginScreen())
+              );
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Your account and data have been deleted.')),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
