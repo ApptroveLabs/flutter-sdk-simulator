@@ -21,6 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userEmail', _emailController.text);
+      
+      // Track user identity in AppTrove SDK
+      AppTroveFlutterSdk.setUserEmail(_emailController.text);
+      AppTroveFlutterSdk.setUserId(_emailController.text.split('@')[0]);
       
       Navigator.pushReplacement(
         context,
@@ -136,8 +141,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setBool('isLoggedIn', true);
+                    await prefs.setString('userEmail', 'guest@flutmarket.com');
+                    
                     AppTroveFlutterSdk.setUserId("guest_user");
                     AppTroveFlutterSdk.setUserName("Guest User");
+                    AppTroveFlutterSdk.setUserEmail("guest@flutmarket.com");
+                    
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => EventsTrackingScreen()),

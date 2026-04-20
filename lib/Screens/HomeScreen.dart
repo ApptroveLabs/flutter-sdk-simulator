@@ -22,6 +22,20 @@ class _EventsTrackingScreenState extends State<EventsTrackingScreen> {
   String searchQuery = '';
   final PageController _pageController = PageController(viewportFraction: 0.9);
   DateTime? lastPressed;
+  String? userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserEmail();
+  }
+
+  Future<void> _loadUserEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userEmail = prefs.getString('userEmail');
+    });
+  }
 
   // Simulated banners
   final List<String> banners = [
@@ -128,10 +142,18 @@ class _EventsTrackingScreenState extends State<EventsTrackingScreen> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                     },
                     child: Text(
-                      'Sign In / Register',
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                      userEmail ?? 'Sign In / Register',
+                      style: TextStyle(color: Colors.white, fontSize: userEmail != null ? 16 : 20, fontWeight: FontWeight.bold),
                     ),
                   ),
+                  if (userEmail != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        'Member',
+                        style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
+                      ),
+                    ),
                 ],
               ),
             ),
