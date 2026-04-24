@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import '../Utils/AppTroveEvents.dart';
 
 class CampaignDataScreen extends StatefulWidget {
   @override
@@ -8,7 +9,7 @@ class CampaignDataScreen extends StatefulWidget {
 }
 
 class _CampaignDataScreenState extends State<CampaignDataScreen> {
-  final TextEditingController _eventIdController = TextEditingController(text: '1CFfUn3xEY');
+  final TextEditingController _eventIdController = TextEditingController(text: AppTroveEvents.PRODUCT_SEARCH);
   
   Map<String, String> _campaignData = {};
   bool _isLoading = false;

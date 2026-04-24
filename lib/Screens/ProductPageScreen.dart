@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import '../Utils/AppTroveEvents.dart';
 
 
 class ProductPageScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _ProductPageScreenState extends State<ProductPageScreen> {
   void initState() {
     super.initState();
     // Track product view event
-    AppTroveEvent apptroveEvent = AppTroveEvent("jKw8qPF50u");
+    AppTroveEvent apptroveEvent = AppTroveEvent(AppTroveEvents.PRODUCT_VIEW);
     apptroveEvent.param1="Product Viewed";
     apptroveEvent.orderId="Britania12123";
     AppTroveFlutterSdk.trackEvent(apptroveEvent);
@@ -22,7 +23,7 @@ class _ProductPageScreenState extends State<ProductPageScreen> {
 
   void _addToCart() {
     // Track add to cart event
-    AppTroveEvent apptroveEvent = AppTroveEvent("Fy4uC1_FlN");
+    AppTroveEvent apptroveEvent = AppTroveEvent(AppTroveEvents.ADD_TO_CART);
     apptroveEvent.param1="Product Added to cart";
     AppTroveFlutterSdk.trackEvent(apptroveEvent);
    // log("getPartner--${AppTroveFlutterSdk.getPartner()}");

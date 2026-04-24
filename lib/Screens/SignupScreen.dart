@@ -4,6 +4,9 @@ import 'LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HomeScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import '../Utils/AppTroveEvents.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -23,6 +26,18 @@ class _SignupScreenState extends State<SignupScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
       await prefs.setString('userEmail', _emailController.text);
+      
+      // Track Registration Event
+      AppTroveEvent regEvent = AppTroveEvent(AppTroveEvents.REGISTRATION);
+      regEvent.param1 = _emailController.text;
+      regEvent.param2 = _nameController.text;
+      regEvent.param3 = "organic_signup";
+      AppTroveFlutterSdk.trackEvent(regEvent);
+      
+      // Also set identity
+      AppTroveFlutterSdk.setUserEmail(_emailController.text);
+      AppTroveFlutterSdk.setUserId(_emailController.text.split('@')[0]);
+      AppTroveFlutterSdk.setUserName(_nameController.text);
       
       Navigator.pushReplacement(
         context,

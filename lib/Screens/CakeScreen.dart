@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import '../Utils/AppTroveEvents.dart';
 import 'HomeScreen.dart';
 
 class CakeScreen extends StatelessWidget {
@@ -125,8 +126,8 @@ class CakeScreen extends StatelessWidget {
         ),
         child: ElevatedButton(
           onPressed: () {
-            // Track add to cart event
-            AppTroveEvent apptroveEvent = AppTroveEvent("Fy4uC1_FlN");
+            // Track Event
+            AppTroveEvent apptroveEvent = AppTroveEvent(AppTroveEvents.ADD_TO_CART);
             apptroveEvent.param1 = "Special Cake Added to cart";
             apptroveEvent.param2 = productId ?? "unknown_cake";
             apptroveEvent.revenue = double.tryParse(price ?? "15.00") ?? 15.00;

@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../Utils/DeveloperTools.dart';
 import '../Utils/CartManager.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import '../Utils/AppTroveEvents.dart';
 
 class EventsTrackingScreen extends StatefulWidget {
   @override
@@ -235,6 +236,11 @@ We ensure your data is encrypted during transmission. You can request data delet
               leading: Icon(Icons.logout, color: Colors.redAccent, size: 28),
               title: Text('Logout', style: TextStyle(color: Colors.redAccent, fontSize: 16, fontWeight: FontWeight.bold)),
               onTap: () async {
+                // Track Logout Event
+                AppTroveEvent logoutEvent = AppTroveEvent(AppTroveEvents.LOGOUT);
+                logoutEvent.param1 = userEmail ?? 'guest';
+                AppTroveFlutterSdk.trackEvent(logoutEvent);
+
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('isLoggedIn', false);
                 await prefs.remove('userEmail');
@@ -644,8 +650,9 @@ We ensure your data is encrypted during transmission. You can request data delet
               final prefs = await SharedPreferences.getInstance();
               
               // Fire SDK Event for Deletion
-              AppTroveEvent delEvent = AppTroveEvent("account_deleted");
+              AppTroveEvent delEvent = AppTroveEvent(AppTroveEvents.ACCOUNT_DELETION);
               delEvent.param1 = prefs.getString('userEmail') ?? 'unknown';
+              delEvent.param2 = "user_requested_deletion";
               AppTroveFlutterSdk.trackEvent(delEvent);
 
               // Clear all local data

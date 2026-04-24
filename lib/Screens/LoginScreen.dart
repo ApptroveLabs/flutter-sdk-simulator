@@ -5,6 +5,8 @@ import 'HomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import '../Utils/AppTroveEvents.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -26,6 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
       // Track user identity in AppTrove SDK
       AppTroveFlutterSdk.setUserEmail(_emailController.text);
       AppTroveFlutterSdk.setUserId(_emailController.text.split('@')[0]);
+      
+      // Track Login Event
+      AppTroveEvent loginEvent = AppTroveEvent(AppTroveEvents.LOGIN);
+      loginEvent.param1 = _emailController.text;
+      loginEvent.param2 = "email_login";
+      AppTroveFlutterSdk.trackEvent(loginEvent);
       
       Navigator.pushReplacement(
         context,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import '../Utils/AppTroveEvents.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Models/Product.dart';
@@ -24,7 +25,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void initState() {
     super.initState();
     // Track product view event
-    AppTroveEvent appTroveEvent = AppTroveEvent("jKw8qPF50u");
+    AppTroveEvent appTroveEvent = AppTroveEvent(AppTroveEvents.PRODUCT_VIEW);
     appTroveEvent.param1 = "Product Viewed";
     appTroveEvent.param2 = widget.product.name;
     appTroveEvent.param3 = widget.product.category;
@@ -35,7 +36,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _addToCart() {
     // Track add to cart event
-    AppTroveEvent appTroveEvent = AppTroveEvent("Fy4uC1_FlN");
+    AppTroveEvent appTroveEvent = AppTroveEvent(AppTroveEvents.ADD_TO_CART);
     appTroveEvent.param1 = "Product Added to cart";
     appTroveEvent.param2 = widget.product.name;
     appTroveEvent.productId = widget.product.id.toString();

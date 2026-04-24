@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import '../Utils/AppTroveEvents.dart';
 import '../Models/Product.dart';
 import 'OrderConfirmationScreen.dart';
 import '../Utils/CartManager.dart';
@@ -28,7 +29,7 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
   double get discount => subtotal * 0.05; // 5% discount
 
   void _purchase() {
-    AppTroveEvent appTroveEvent = AppTroveEvent("Q4YsqBKnzZ");
+    AppTroveEvent appTroveEvent = AppTroveEvent(AppTroveEvents.PURCHASE);
     appTroveEvent.revenue = total;
     appTroveEvent.currency = "USD";
     appTroveEvent.param1 = "Cart Purchase";

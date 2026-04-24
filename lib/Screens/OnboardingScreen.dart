@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import '../Utils/AppTroveEvents.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onComplete;
@@ -33,6 +36,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   Future<void> _completeOnboarding() async {
+    // Track Onboarding Event
+    AppTroveEvent onboardingEvent = AppTroveEvent(AppTroveEvents.ONBOARDING);
+    onboardingEvent.param1 = "walkthrough_completed";
+    AppTroveFlutterSdk.trackEvent(onboardingEvent);
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingSeen', true);
     widget.onComplete();
