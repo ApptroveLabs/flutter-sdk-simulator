@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.trackier.Flutmarket</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>flutmarket</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -52,6 +65,8 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app requires access to your location to provide personalized offers and secure attribution tracking based on your region.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
 </dict>
 </plist>

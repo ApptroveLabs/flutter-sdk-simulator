@@ -7,6 +7,7 @@ import 'package:flutter_simulator/Screens/SplashScreen.dart';
 import 'package:flutter_simulator/Screens/ProductDetailScreen.dart';
 import 'package:flutter_simulator/Models/Product.dart';
 import 'package:apptrove_sdk_flutter/apptroveconfig.dart';
+import 'package:app_links/app_links.dart';
 import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -242,7 +243,7 @@ void _initializeSDKs() async {
       secretKey = dotenv.env['IOS_APPTROVE_SECRET_KEY'] ?? "";
     }
 
-    final apptroveSDKConfig = AppTroveSDKConfig(sdkKey, "production");
+    final apptroveSDKConfig = AppTroveSDKConfig(sdkKey, "development");
 
     // Set app secrets for security
     apptroveSDKConfig.setAppSecret(secretId, secretKey);
@@ -256,51 +257,62 @@ void _initializeSDKs() async {
 
 
     // Deferred Deep Link Callback - Must be set BEFORE SDK initialization
+
     apptroveSDKConfig.deferredDeeplinkCallback = (deepLinkObj) {
-      final String? urlString = deepLinkObj.url;
-      print('The value of deeplinkUrl is: $urlString');
+      if (_hasNavigatedFromDeepLink) return;
+
+      print('--- AppTrove Deferred Deep Link Received ---');
+
+      print('The value of deeplinkUrl is: ${deepLinkObj.url}');
+      print('isDeferred: ${deepLinkObj.isDeferred}');
+      print('deepLinkValue: ${deepLinkObj.deepLinkValue}');
+      print('campaign: ${deepLinkObj.campaign}');
+      print('campaignId: ${deepLinkObj.campaignId}');
+      print('partnerId: ${deepLinkObj.partnerId}');
+      print('siteId: ${deepLinkObj.siteId}');
+      print('subSiteId: ${deepLinkObj.subSiteId}');
+      print('ad: ${deepLinkObj.ad}');
+      print('adId: ${deepLinkObj.adId}');
+      print('adSet: ${deepLinkObj.adSet}');
+      print('adSetId: ${deepLinkObj.adSetId}');
+      print('channel: ${deepLinkObj.channel}');
+      print('clickId: ${deepLinkObj.clickId}');
+      print('message: ${deepLinkObj.message}');
+      print('p1-p5: ${deepLinkObj.p1} ${deepLinkObj.p2} ${deepLinkObj.p3} ${deepLinkObj.p4} ${deepLinkObj.p5}');
+      print('sdkParams: ${deepLinkObj.sdkParams}');
       
-      // Prevent multiple navigation attempts
-      if (_hasNavigatedFromDeepLink) {
-        print('Already navigated from deep link, ignoring subsequent callbacks');
-        return;
+      // 1. Check if we have ANY meaningful marketing data
+      String? productId;
+      String? productName;
+      
+      // Extract from SDK Params
+      if (deepLinkObj.sdkParams != null) {
+        productId = deepLinkObj.sdkParams!['productId'] ?? deepLinkObj.sdkParams!['product_id'] ?? deepLinkObj.sdkParams!['id'];
+        productName = deepLinkObj.sdkParams!['productName'] ?? deepLinkObj.sdkParams!['product_name'] ?? deepLinkObj.sdkParams!['name'];
       }
 
+      // 2. Determine if this is a "Marketing Link" vs "Organic"
+      bool isMarketingLink = deepLinkObj.sdkParams?['clicked_apptrove_link'] == true || 
+                             (deepLinkObj.deepLinkValue != null && deepLinkObj.deepLinkValue!.isNotEmpty);
 
-
-      // Parse the resolved deep link and extract parameters
-      if (urlString != null && urlString.isNotEmpty) {
-        try {
-          final Uri resolvedUri = Uri.parse(urlString);
-          final String? dlv = resolvedUri.queryParameters['dlv'];
-          final String? cakename = resolvedUri.queryParameters['cakename'];
-          final String? price = resolvedUri.queryParameters['price'];
-          final String? clickedApptroveLink = resolvedUri.queryParameters['clicked_apptrove_link'];
-          
-          print('Resolved deep link parameters:');
-          print('  dlv: $dlv');
-          print('  cakename: $cakename');
-          print('  price: $price');
-          print('  clicked_apptrove_link: $clickedApptroveLink');
-          
-          // Only navigate if we have a valid dlv parameter (not just referrer data)
-          if (dlv != null && dlv.isNotEmpty) {
-            _hasNavigatedFromDeepLink = true;
-            // Navigate to appropriate screen based on deep link parameters
-            // Add a small delay to ensure the app is fully loaded
-            Future.delayed(Duration(milliseconds: 1000), () {
-              _navigateFromDeferredDeepLink(urlString);
-            });
-          } else {
-            print('No valid dlv parameter found, skipping navigation');
-          }
-        } catch (e) {
-          print('Error parsing resolved deep link: $e');
-        }
+      // 3. Navigation Decision
+      if (productId != null && productId.toString().isNotEmpty) {
+        // CASE 1: PRODUCT LINK
+        print('Product ID found: $productId. Redirecting to Product Details.');
+        _hasNavigatedFromDeepLink = true;
+        Future.delayed(Duration(milliseconds: 1500), () => _navigateToProduct(productId, productName));
+      } 
+      else if (isMarketingLink) {
+        // CASE 2: RANDOM MARKETING LINK
+        print('Random Marketing link detected. Redirecting to Cake Screen.');
+        _hasNavigatedFromDeepLink = true;
+        Future.delayed(Duration(milliseconds: 1500), () => _navigateToCakeScreen(deepLinkObj.url));
+      } 
+      else {
+        // CASE 3: ORGANIC INSTALL (Stay on Home Page)
+        print('Organic install or no data. Staying on Home Page.');
       }
     };
-
-
 
     // Apple Ads Attribution Token - Must be called BEFORE SDK initialization
     if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -338,6 +350,12 @@ void _initializeSDKs() async {
     AppTroveFlutterSdk.initializeSDK(apptroveSDKConfig);
     print("Apptrove SDK initialized successfully.");
 
+    // For iOS Only: Enable deferred deep link functionality
+    if (Platform.isIOS) {
+      print("Subscribing to Attribution link (iOS)");
+      AppTroveFlutterSdk.subscribeAttributionlink();
+    }
+
     // Initialize deep link listener after SDK is initialized
     _initDeepLinkListener();
 
@@ -359,32 +377,65 @@ void _initializeSDKs() async {
 
 // Initialize deep link listener after SDK is initialized
 // Listen for incoming URLs and send to Apptrove SDK
-void _initDeepLinkListener() {
-  // final appLinks = AppLinks();
-  //
-  // // Listen for incoming links and send to Apptrove SDK
-  // appLinks.uriLinkStream.listen((Uri? uri) {
-  //   if (uri != null) {
-  //     print('Applink incoming url: ${uri.toString()}');
-  //     AppTroveFlutterSdk.parseDeeplink(uri.toString());
-  //   }else{
-  //     // Subscribe to attribution link for deferred deep links (iOS only)
-  //     if (Platform.isIOS) {
-  //       AppTroveFlutterSdk.subscribeAttributionlink();
-  //     }
-  //   }
-  // }, onError: (err) {
-  //   print('Error listening to deep links: $err');
-  // });
+void _initDeepLinkListener() async {
+  final appLinks = AppLinks();
 
+  try {
+    // 1. Handle the initial link (when app is opened from a closed state)
+    final Uri? initialUri = await appLinks.getInitialLink();
+    if (initialUri != null) {
+      print('Initial Applink: ${initialUri.toString()}');
+      AppTroveFlutterSdk.parseDeeplink(initialUri.toString());
+    } else {
+      // If no initial link, subscribe for deferred deep link (iOS only)
+      if (Platform.isIOS) {
+        AppTroveFlutterSdk.subscribeAttributionlink();
+      }
+    }
 
-  // For Testing purpose Send direcly
-  // Parse deep link before SDK initialization for test send the test url or get the link from app launch and send to parsedeeplink function
-  // const String testDeepLink = 'https://superliving.u9ilnk.me/d/iOhRy6hQMG';
-  // print('Parsing deep link after SDK initialization: $testDeepLink');
-  // AppTroveFlutterSdk.parseDeeplink(testDeepLink);
+    // 2. Listen for incoming links while the app is in foreground/background
+    appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri != null) {
+        print('Foreground Applink: ${uri.toString()}');
+        AppTroveFlutterSdk.parseDeeplink(uri.toString());
+      }
+    }, onError: (err) {
+      print('Error listening to deep link stream: $err');
+    });
+  } catch (e) {
+    print('Exception in DeepLink Listener: $e');
+  }
 }
 
+
+
+// Navigation helpers for Deep Linking
+void _navigateToCakeScreen(String? url) {
+  if (navigatorKey.currentState == null) {
+    Future.delayed(Duration(milliseconds: 500), () => _navigateToCakeScreen(url));
+    return;
+  }
+  navigatorKey.currentState?.pushReplacement(
+    MaterialPageRoute(builder: (context) => CakeScreen(dlv: 'random_link', actionData: url))
+  );
+}
+
+void _navigateToProduct(String? id, String? name) {
+  if (navigatorKey.currentState == null) {
+    Future.delayed(Duration(milliseconds: 500), () => _navigateToProduct(id, name));
+    return;
+  }
+
+  // Try to find the product in our preloaded list
+  final product = PreloadedProducts.products.firstWhere(
+    (p) => p.id.toString() == id || p.name.toLowerCase() == name?.toLowerCase(),
+    orElse: () => PreloadedProducts.products.first,
+  );
+
+  navigatorKey.currentState?.pushReplacement(
+    MaterialPageRoute(builder: (context) => ProductDetailScreen(product: product))
+  );
+}
 
 /// Track app open event with complete registration example
 void _trackAppOpen() {
