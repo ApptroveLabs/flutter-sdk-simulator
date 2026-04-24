@@ -4,6 +4,10 @@ import 'OnboardingScreen.dart';
 import 'LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:io';
+import 'package:apptrove_sdk_flutter/apptroveevent.dart';
+import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
+import '../Utils/AppTroveEvents.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -34,6 +38,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
 
     _animController.forward();
+
+    // Track App Open Event only for iOS
+    if (Platform.isIOS) {
+      AppTroveEvent appOpenEvent = AppTroveEvent(AppTroveEvents.APP_OPEN);
+      AppTroveFlutterSdk.trackEvent(appOpenEvent);
+    }
 
     Future.delayed(Duration(seconds: 3), () async {
       if (mounted) {
