@@ -228,20 +228,24 @@ void _navigateFromDeferredDeepLink(String uri) {
 
 void _initializeSDKs() async {
   try {
-    // Get the environment variables directly from dotenv
-    final trDevKey = dotenv.env['TR_DEV_KEY'] ?? "default_value";
-    // final secretId = dotenv.env['SECRET_ID'] ?? "default_value";
-    // final secretKey = dotenv.env['SECRET_KEY'] ?? "default_value";
+    String sdkKey = "";
+    String secretId = "";
+    String secretKey = "";
 
-    final trackerSDKConfig = AppTroveSDKConfig(trDevKey, "development");
+    if (Platform.isAndroid) {
+      sdkKey = dotenv.env['ANDROID_APPTROVE_SDK_KEY'] ?? "";
+      secretId = dotenv.env['ANDROID_APPTROVE_SECRET_ID'] ?? "";
+      secretKey = dotenv.env['ANDROID_APPTROVE_SECRET_KEY'] ?? "";
+    } else if (Platform.isIOS) {
+      sdkKey = dotenv.env['IOS_APPTROVE_SDK_KEY'] ?? "";
+      secretId = dotenv.env['IOS_APPTROVE_SECRET_ID'] ?? "";
+      secretKey = dotenv.env['IOS_APPTROVE_SECRET_KEY'] ?? "";
+    }
 
-    // trackerSDKConfig.setFacebookAppId("234234"); // Only for android Users Read docs for details
+    final apptroveSDKConfig = AppTroveSDKConfig(sdkKey, "production");
 
-    // Use this for secure Install and event Body
-    //
-    // trackerSDKConfig.setAppId("gppNtor2hH"); // Get from Panel
-    // trackerSDKConfig.setEncryptionKey("zbWpNbF2epK1TUltzfKIlUTleaXqraEG+glgpnwiEN8="); // Get from Panel
-    // trackerSDKConfig.setEncryptionType(AppTroveEncryptionType.AES_GCM);
+    // Set app secrets for security
+    apptroveSDKConfig.setAppSecret(secretId, secretKey);
 
     // Set user details
     AppTroveFlutterSdk.setUserId("009013452535353");
@@ -249,13 +253,10 @@ void _initializeSDKs() async {
     AppTroveFlutterSdk.setUserName("SanuTest");
     AppTroveFlutterSdk.setUserPhone("8130300721");
 
-    // Set app secrets
-    // trackerSDKConfig.setAppSecret(secretId,secretKey);
-
 
 
     // Deferred Deep Link Callback - Must be set BEFORE SDK initialization
-    trackerSDKConfig.deferredDeeplinkCallback = (deepLinkObj) {
+    apptroveSDKConfig.deferredDeeplinkCallback = (deepLinkObj) {
       final String? urlString = deepLinkObj.url;
       print('The value of deeplinkUrl is: $urlString');
       
@@ -334,7 +335,7 @@ void _initializeSDKs() async {
     AppTroveFlutterSdk.waitForATTUserAuthorization(10);
 
     // Initialize Apptrove SDK
-    AppTroveFlutterSdk.initializeSDK(trackerSDKConfig);
+    AppTroveFlutterSdk.initializeSDK(apptroveSDKConfig);
     print("Apptrove SDK initialized successfully.");
 
     // Initialize deep link listener after SDK is initialized
