@@ -7,6 +7,7 @@ import 'package:apptrove_sdk_flutter/apptrovefluttersdk.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:apptrove_sdk_flutter/apptroveevent.dart';
 import '../Utils/AppTroveEvents.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -27,7 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
       
       // Track user identity in AppTrove SDK
       AppTroveFlutterSdk.setUserEmail(_emailController.text);
-      AppTroveFlutterSdk.setUserId(_emailController.text.split('@')[0]);
+      String userId = _emailController.text.split('@')[0];
+      AppTroveFlutterSdk.setUserId(userId);
+      
+      // Sync identity with RevenueCat
+      try {
+        await Purchases.logIn(userId);
+      } catch (e) {
+        debugPrint("RevenueCat Login Error: $e");
+      }
       
       // Track Login Event
       AppTroveEvent loginEvent = AppTroveEvent(AppTroveEvents.LOGIN);
@@ -154,6 +163,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     AppTroveFlutterSdk.setUserId("guest_user");
                     AppTroveFlutterSdk.setUserName("Guest User");
                     AppTroveFlutterSdk.setUserEmail("guest@flutmarket.com");
+
+                    // Sync identity with RevenueCat
+                    try {
+                      await Purchases.logIn("guest_user");
+                    } catch (e) {
+                      debugPrint("RevenueCat Guest Login Error: $e");
+                    }
                     
                     Navigator.pushReplacement(
                       context,

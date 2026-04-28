@@ -5,6 +5,8 @@ import '../Utils/AppTroveEvents.dart';
 import '../Models/Product.dart';
 import 'OrderConfirmationScreen.dart';
 import '../Utils/CartManager.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 class CartItem {
   final Product product;
@@ -22,6 +24,41 @@ class AddToCartScreen extends StatefulWidget {
 
 class _AddToCartScreenState extends State<AddToCartScreen> {
   List<CartItem> cartItems = CartManager().items;
+  bool isPremium = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkStatus();
+    _fetchOfferings();
+  }
+
+  Future<void> _fetchOfferings() async {
+    try {
+      Offerings offerings = await Purchases.getOfferings();
+      if (offerings.current != null) {
+        debugPrint("RevenueCat: Current offering: ${offerings.current!.identifier}");
+        for (var package in offerings.current!.availablePackages) {
+          debugPrint("RevenueCat: Available package: ${package.identifier} -> Product: ${package.storeProduct.identifier}");
+        }
+      } else {
+        debugPrint("RevenueCat: No current offering found. Check your dashboard configuration.");
+      }
+    } catch (e) {
+      debugPrint("RevenueCat: Error fetching offerings: $e");
+    }
+  }
+
+  Future<void> _checkStatus() async {
+    try {
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      setState(() {
+        isPremium = customerInfo.entitlements.all["premium"]?.isActive ?? false;
+      });
+    } catch (e) {
+      debugPrint("Error checking status: $e");
+    }
+  }
 
   double get subtotal => cartItems.fold(0, (sum, item) => sum + item.subtotal);
   double get shipping => subtotal > 500 ? 0 : 9.99;
@@ -41,6 +78,86 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => OrderConfirmationScreen(total: total)),
+    );
+  }
+
+  Future<void> _buyPremium() async {
+    try {
+      // Use RevenueCat's beautiful built-in Paywall UI
+      // This will automatically show the paywall if the user doesn't have the "premium" entitlement
+      final result = await RevenueCatUI.presentPaywallIfNeeded("premium");
+      
+      if (result == PaywallResult.purchased || result == PaywallResult.restored) {
+        setState(() => isPremium = true);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Welcome to Premium!")),
+        );
+      }
+    } catch (e) {
+      debugPrint("Paywall error: $e");
+    }
+  }
+
+  Future<void> _restorePurchases() async {
+    try {
+      CustomerInfo customerInfo = await Purchases.restorePurchases();
+      setState(() {
+        isPremium = customerInfo.entitlements.all["premium"]?.isActive ?? false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(isPremium ? "Purchases Restored!" : "No purchases found.")),
+      );
+    } catch (e) {
+      debugPrint("Restore error: $e");
+    }
+  }
+
+  Widget _buildPremiumCard() {
+    if (isPremium) return SizedBox.shrink();
+    
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.amber.shade200),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber.shade700, size: 30),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Go Premium", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text("Get 20% off and free shipping!", style: TextStyle(fontSize: 12, color: Colors.amber.shade900)),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: _buyPremium,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber.shade700,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: Text("Upgrade"),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: _restorePurchases,
+              child: Text("Restore Purchases", style: TextStyle(fontSize: 11, color: Colors.amber.shade900)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -108,6 +225,8 @@ class _AddToCartScreenState extends State<AddToCartScreen> {
                         ),
                       ),
                       SizedBox(height: 16),
+                      
+                      _buildPremiumCard(),
 
                       // Cart Items
                       ...cartItems.asMap().entries.map((entry) {

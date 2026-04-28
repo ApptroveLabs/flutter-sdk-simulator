@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'HomeScreen.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
   final double total;
@@ -50,6 +51,31 @@ class OrderConfirmationScreen extends StatelessWidget {
                   "Thank you for shopping with Flutmarket",
                   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                   textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                FutureBuilder<CustomerInfo>(
+                  future: Purchases.getCustomerInfo(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && (snapshot.data?.entitlements.all["premium"]?.isActive ?? false)) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.shade100,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.amber.shade300),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.star, color: Colors.amber.shade800, size: 16),
+                            SizedBox(width: 6),
+                            Text("PREMIUM MEMBER", style: TextStyle(color: Colors.amber.shade900, fontWeight: FontWeight.bold, fontSize: 12)),
+                          ],
+                        ),
+                      );
+                    }
+                    return SizedBox.shrink();
+                  },
                 ),
                 SizedBox(height: 30),
 
