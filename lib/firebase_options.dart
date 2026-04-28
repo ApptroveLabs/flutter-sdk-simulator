@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '123456789',
     projectId: 'apptrove-flutmarket',
     storageBucket: 'apptrove-flutmarket.appspot.com',
-    iosBundleId: 'com.apptrove.flutmarket',
+    iosBundleId: 'com.trackier.Flutmarket',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: 'your-messaging-sender-id',
     projectId: 'your-project-id',
     storageBucket: 'your-project-id.appspot.com',
-    iosBundleId: 'com.apptrove.flutmarket',
+    iosBundleId: 'com.trackier.Flutmarket',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

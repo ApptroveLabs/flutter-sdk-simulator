@@ -6,5 +6,7 @@
 	<array>
 		<string>applinks:trackier58.u9ilnk.me</string>
 	</array>
+	<key>aps-environment</key>
+	<string>production</string>
 </dict>
 </plist>

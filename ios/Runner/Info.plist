@@ -68,5 +68,12 @@
 	<false/>
 	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>We need permission to send you notifications and track uninstalls.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

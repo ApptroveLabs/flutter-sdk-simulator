@@ -494,7 +494,7 @@ We ensure your data is encrypted during transmission. You can request data delet
                                 Expanded(
                                   flex: 2,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

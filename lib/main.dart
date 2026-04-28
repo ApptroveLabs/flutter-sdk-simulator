@@ -35,23 +35,47 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool _hasNavigatedFromDeepLink = false;
 
 void main() async {
+  // Catch all Flutter framework errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint("Flutter Error: ${details.exception}");
+  };
+
+  // Catch all asynchronous Dart errors
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint("Async Error: $error");
+    return true; // Prevent the app from crashing
+  };
+
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // 1. Initialize Firebase safely
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint("Firebase initialization error: $e");
+  }
 
-  // Load the environment variables from the .env file
-  await dotenv.load();
+  // 2. Load the environment variables safely
+  try {
+    await dotenv.load(isOptional: true);
+  } catch (e) {
+    debugPrint("DotEnv loading error: $e");
+  }
 
   runApp(MyApp());
   
   // Initialize SDKs after the app is running
   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    // Show App Tracking Transparency prompt on iOS
-    if (Platform.isIOS) {
-      await AppTrackingTransparency.requestTrackingAuthorization();
+    try {
+      // Show App Tracking Transparency prompt on iOS safely
+      if (Platform.isIOS) {
+        await AppTrackingTransparency.requestTrackingAuthorization();
+      }
+    } catch (e) {
+      debugPrint("ATT request error: $e");
     }
     _initializeSDKs();
   });
@@ -241,6 +265,11 @@ void _initializeSDKs() async {
       sdkKey = dotenv.env['IOS_APPTROVE_SDK_KEY'] ?? "";
       secretId = dotenv.env['IOS_APPTROVE_SECRET_ID'] ?? "";
       secretKey = dotenv.env['IOS_APPTROVE_SECRET_KEY'] ?? "";
+    }
+
+    if (sdkKey.isEmpty) {
+      debugPrint("CRITICAL WARNING: Apptrove SDK Key is empty (likely due to missing .env file in CI/CD). Aborting SDK initialization to prevent fatal native crash.");
+      return;
     }
 
     final apptroveSDKConfig = AppTroveSDKConfig(sdkKey, "development");
