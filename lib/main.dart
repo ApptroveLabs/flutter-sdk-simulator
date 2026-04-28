@@ -18,6 +18,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'Screens/BuildinEventScreen.dart';
 import 'Screens/CustomEventsScreen.dart';
@@ -63,6 +64,29 @@ void main() async {
     await dotenv.load(isOptional: true);
   } catch (e) {
     debugPrint("DotEnv loading error: $e");
+  }
+
+  // 3. Initialize RevenueCat
+  try {
+    await Purchases.setLogLevel(LogLevel.debug);
+    
+    PurchasesConfiguration configuration;
+    if (Platform.isAndroid) {
+      configuration = PurchasesConfiguration("test_QVpyGdggNosRzNUeMOPRUPDXDoM");
+    } else {
+      configuration = PurchasesConfiguration("test_QVpyGdggNosRzNUeMOPRUPDXDoM");
+    }
+    
+    await Purchases.configure(configuration);
+    
+    // Listen for customer info updates
+    Purchases.addCustomerInfoUpdateListener((customerInfo) {
+      debugPrint("RevenueCat: Customer info updated. Entitlements: ${customerInfo.entitlements.active}");
+    });
+    
+    debugPrint("RevenueCat initialized successfully.");
+  } catch (e) {
+    debugPrint("RevenueCat initialization error: $e");
   }
 
   runApp(MyApp());
